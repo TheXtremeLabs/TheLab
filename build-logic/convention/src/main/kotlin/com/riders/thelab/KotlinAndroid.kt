@@ -20,19 +20,8 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 /**
  * Configure base Kotlin with Android options
  */
-
-internal fun Project.configureKotlinAndroid(applicationExtension: ApplicationExtension) {
-    configureKotlinCommons(applicationExtension)
-    configureKotlinJvm()
-}
-
-internal fun Project.configureKotlinAndroid(libraryExtension: LibraryExtension) {
-    configureKotlinCommons(libraryExtension)
-    configureKotlinJvm()
-}
-
-internal fun Project.configureKotlinAndroid(testExtension: TestExtension) {
-    configureKotlinCommons(testExtension)
+internal fun Project.configureKotlinAndroid(commonExtension: CommonExtension) {
+    configureKotlinCommons(commonExtension)
     configureKotlinJvm()
 }
 
@@ -136,6 +125,8 @@ private inline fun <reified T : KotlinBaseExtension> Project.configureKotlin() =
             "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
             "-opt-in=kotlinx.coroutines.FlowPreview",
             "-opt-in=kotlin.Experimental",
+            // Since Kotlin 2.3.20 : Introducing backing properties
+            "-Xexplicit-backing-fields"
         )
         this.freeCompilerArgs.add(
             // Enable experimental coroutines APIs, including Flow

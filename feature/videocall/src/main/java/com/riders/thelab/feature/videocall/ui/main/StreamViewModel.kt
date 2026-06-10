@@ -6,9 +6,13 @@ import androidx.lifecycle.application
 import com.riders.thelab.core.ui.compose.base.BaseAndroidViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.feature.videocall.data.ConnectState
+import com.riders.thelab.feature.videocall.utils.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.getstream.log.Priority
+import io.getstream.video.android.core.GEO
 import io.getstream.video.android.core.StreamVideo
 import io.getstream.video.android.core.StreamVideoBuilder
+import io.getstream.video.android.core.logging.LoggingLevel
 import io.getstream.video.android.model.User
 import io.getstream.video.android.model.UserType
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,21 +29,29 @@ class StreamViewModel @Inject constructor(
     DefaultLifecycleObserver {
     var streamClient: StreamVideo? = null
 
-    private var _connectState: MutableStateFlow<ConnectState> = MutableStateFlow(ConnectState())
-    val connectState: StateFlow<ConnectState> = _connectState
+    val connectState: StateFlow<ConnectState>
+        // Since Kotlin 2.3.20 : Introducing backing properties
+        field = MutableStateFlow<ConnectState>(ConnectState())
 
+
+    override fun onCleared() {
+        super.onCleared()
+
+        StreamVideo.removeClient()
+    }
 
     fun updateConnectState(newState: ConnectState) {
         Timber.d("updateConnectState() | new connect state: $newState")
-        _connectState.update { newState }
+        connectState.update { newState }
     }
 
     fun updateConnectState(
         name: String? = null,
+        isConnected: Boolean? = null,
         errorMessage: String? = null
     ) {
         Timber.d("updateConnectState() | name: $name, errorMessage: $errorMessage")
-        _connectState.update {
+        connectState.update {
             it.copy(name = name ?: it.name, errorMessage = errorMessage)
         }
     }
@@ -49,22 +61,28 @@ class StreamViewModel @Inject constructor(
         Timber.d("initStreamVideoClient() | name: $newUserName")
         updateConnectState(errorMessage = null)
 
-        if (_connectState.value.name.isBlank()) {
+        if (connectState.value.name.isBlank()) {
             updateConnectState(errorMessage = "The username can't be blank.")
             return
         }
 
-        if (null == streamClient || _connectState.value.name != newUserName) {
+        if (null == streamClient || connectState.value.name != newUserName) {
+            StreamVideo.instance().logOut()
             StreamVideo.removeClient()
 
             streamClient = StreamVideoBuilder(
                 context = application.applicationContext,
-                apiKey = "djmy2f7dpjk8",
+                apiKey = Constants.STREAM_SDK_API_KEY,
                 user = User(
                     id = newUserName,
                     name = newUserName,
+                    image = "https://bit.ly/2TIt8NR",
                     type = UserType.Guest
-                )
+                ),
+                geo = GEO.GlobalEdgeNetwork, // Choose appropriate geo region
+                token = Constants.STREAM_SDK_TOKEN_KEY,
+                // set the logging level
+                loggingLevel = LoggingLevel(priority = Priority.DEBUG),
             )
                 .build()
         }
@@ -85,10 +103,20 @@ class StreamViewModel @Inject constructor(
             is UiEvent.OnNameChanged -> updateConnectState(name = event.name)
 
             is UiEvent.OnConnectClicked -> {
-                initStreamVideoClient(_connectState.value.name)
+                initStreamVideoClient(connectState.value.name)
             }
 
-            is UiEvent.OnDisconnectClicked -> {}
+            is UiEvent.OnDisconnectClicked -> {
+                streamClient?.logOut()
+
+                updateConnectState(
+                    ConnectState(
+                        name = connectState.value.name,
+                        isConnected = false,
+                        errorMessage = null
+                    )
+                )
+            }
         }
     }
 }

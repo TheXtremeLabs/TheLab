@@ -10,6 +10,7 @@ import com.riders.thelab.core.ui.data.local.preferences.serializer.UserPreferenc
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import org.koin.core.annotation.Singleton
 import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
@@ -18,7 +19,7 @@ val Context.theLabUiPreferencesDataStore: DataStore<UserPreferences> by dataStor
     fileName = "user_preferences.proto",
     serializer = UserPreferencesSerializer
 )
-
+@Singleton
 class PreferencesImpl @Inject constructor(
     private val context: Context
 ) : IPreferences {

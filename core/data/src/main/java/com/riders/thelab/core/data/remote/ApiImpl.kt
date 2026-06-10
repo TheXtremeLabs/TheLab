@@ -12,6 +12,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.riders.thelab.core.common.network.DownloadState
+import com.riders.thelab.core.common.network.saveFileAsFlow
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import com.riders.thelab.core.data.BuildConfig
 import com.riders.thelab.core.data.local.model.Download
@@ -223,6 +225,29 @@ class ApiImpl @Inject constructor(
                 context.filesDir!!,
                 "my_file"
             )
+
+    override suspend fun getCurrentWeather(location: Location): OneCallWeatherResponse?  =
+        mWeatherApiService
+            .getCurrentWeatherWithNewOneCallAPI(
+                location.latitude,
+                location.longitude
+            )
+
+    override suspend fun getBulkDownload(): Call<ResponseBody> =
+        mWeatherBulkApiService.getCitiesZipFile()
+
+    override suspend fun getBulkDownloadAsFlow(
+        context: Context,
+        filePath: String
+    ): Flow<DownloadState> {
+        val split = filePath.split("/")
+        val fileName = split[split.size - 1]
+
+        return mWeatherBulkApiService.getCitiesGZipFile().saveFileAsFlow(
+            context = context,
+            destinationPath = fileName
+        )
+    }
 
 
     private fun ResponseBody.downloadCitiesFile(

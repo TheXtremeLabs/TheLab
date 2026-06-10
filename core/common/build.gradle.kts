@@ -30,9 +30,6 @@ dependencies {
     // General Dependencies
     ///////////////////////////////////
     // Kotlin
-    // api(platform(libs.kotlin.bom))
-    api(libs.kotlinx.coroutines.core)
-    api(libs.kotlinx.coroutines.android)
     api(libs.kotlinx.serialization.json)
     androidTestImplementation(libs.kotlinx.coroutines.test)
 
@@ -54,11 +51,11 @@ dependencies {
 
     // OkHttp
     // define a BOM and its version
-    api(platform(libs.okhttp.bom))
+    implementation(platform(libs.okhttp.bom))
     // define any required OkHttp artifacts without version
-    api(libs.okhttp)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
 
-    api(libs.timber)
 
 
     ///////////////////////////////////

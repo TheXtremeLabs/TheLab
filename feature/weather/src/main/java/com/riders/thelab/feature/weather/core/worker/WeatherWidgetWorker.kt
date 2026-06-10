@@ -7,6 +7,7 @@ import android.location.Location
 import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.hilt.work.HiltWorker
+import androidx.work.CoroutineWorker
 import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
@@ -14,18 +15,15 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.core.common.utils.LabLocationManager
+import com.riders.thelab.core.common.location.LabLocationManager
 import com.riders.thelab.core.common.utils.toLocation
-import com.riders.thelab.core.common.worker.BaseCoroutineWorker
-import com.riders.thelab.core.data.IRepository
-import com.riders.thelab.core.data.local.model.weather.ForecastWeatherWidgetModel
-import com.riders.thelab.core.data.local.model.weather.WeatherWidgetModel
-import com.riders.thelab.core.data.local.model.weather.toWidgetModel
-import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
+import com.riders.thelab.core.domain.model.weather.Weather
+import com.riders.thelab.core.domain.model.weather.toWidgetModel
+import com.riders.thelab.core.domain.repository.IWeatherRepository
 import com.riders.thelab.core.ui.compose.utils.getIconUri
 import com.riders.thelab.feature.weather.core.widget.WeatherGlanceStateDefinition
-import com.riders.thelab.feature.weather.core.widget.WeatherInfo
 import com.riders.thelab.feature.weather.core.widget.WeatherWidget
+import com.riders.thelab.feature.weather.data.compose.WeatherInfoUiState
 import com.riders.thelab.feature.weather.utils.toWeatherIconFullUrl
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
@@ -39,8 +37,8 @@ import java.util.Locale
 class WeatherWidgetWorker @AssistedInject constructor(
     @Assisted val context: Context,
     @Assisted val workerParams: WorkerParameters,
-    private val mRepository: IRepository
-) : BaseCoroutineWorker(context, workerParams) {
+    private val repository: IWeatherRepository
+) : CoroutineWorker(context, workerParams) {
 
     private var outputData: Data? = null
 
@@ -49,7 +47,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
         Timber.d("doWork()")
 
         // Update state to indicate loading
-        setWidgetState(WeatherInfo.Loading)
+        setWidgetState(WeatherInfoUiState.Loading)
 
         return runCatching {
             Timber.i("Attempt to get current location")
@@ -58,24 +56,22 @@ class WeatherWidgetWorker @AssistedInject constructor(
             if (null == location) {
                 Timber.e("Unable to get user's location")
                 // Unable to fetch user location
-                outputData = createOutputData(EXTRA_WORK_RESULT to WORK_LOCATION_FAILED)
-                setWidgetState(WeatherInfo.Unavailable("Unable to fetch user's location"))
+                outputData = createOutputData(WORK_LOCATION_FAILED)
+                setWidgetState(WeatherInfoUiState.Unavailable("Unable to fetch user's location"))
                 Result.failure(outputData!!)
             } else {
-                val oneCallWeatherResponse: OneCallWeatherResponse? =
-                    mRepository.getWeatherOneCallAPI(location)
+                val weather: Weather? = repository.getCurrentWeather(location)
 
                 // Check if response is null
-                if (null == oneCallWeatherResponse) {
+                if (null == weather) {
                     Timber.e("null == oneCallWeatherResponse | weather call failed, response value is null")
-                    setWidgetState(WeatherInfo.Unavailable("weather call failed, response value is null"))
-                    outputData = createOutputData(EXTRA_WORK_RESULT to WORK_WEATHER_CALL_FAILED)
+                    setWidgetState(WeatherInfoUiState.Unavailable("weather call failed, response value is null"))
+                    outputData = createOutputData(WORK_WEATHER_CALL_FAILED)
                     Result.failure(outputData!!)
                 } else {
                     Timber.d("observer.onSuccess(responseFile)")
 
-                    val weatherLocation =
-                        (oneCallWeatherResponse.latitude to oneCallWeatherResponse.longitude).toLocation()
+                    val weatherLocation = (weather.latitude to weather.longitude).toLocation()
 
                     if (!LabCompatibilityManager.isTiramisu()) {
                         val address = LabAddressesUtils
@@ -86,14 +82,13 @@ class WeatherWidgetWorker @AssistedInject constructor(
 
                         // Load city name
                         val cityName = address?.locality
-                        val weatherWidgetBundle =
-                            runBlocking {
-                                oneCallWeatherResponse.toWidgetModel().apply {
-                                    this?.let { weatherWidgetModel: WeatherWidgetModel ->
+                        val weatherWidgetBundle = runBlocking {
+                                weather.toWidgetModel().apply {
+                                    this?.let { weatherWidgetModel: com.riders.thelab.core.domain.model.weather.WeatherWidget ->
                                         icon = weatherWidgetModel.icon.toWeatherIconFullUrl()
                                             .getIconUri(context)
 
-                                        weatherWidgetModel.forecast.forEach { forecastElement: ForecastWeatherWidgetModel ->
+                                        weatherWidgetModel.forecast.forEach { forecastElement: _root_ide_package_.com.riders.thelab.core.domain.model.weather.ForecastWeatherWidget ->
                                             forecastElement.icon =
                                                 forecastElement.icon.toWeatherIconFullUrl()
                                                     .getIconUri(context)
@@ -107,7 +102,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
                         } else {
                             runBlocking {
                                 setWidgetState(
-                                    WeatherInfo.Available(
+                                    WeatherInfoUiState.Available(
                                         cityName!!,
                                         weatherWidgetBundle
                                     )
@@ -116,7 +111,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
                         }
 
                         // Create and send outputData
-                        outputData = createOutputData(EXTRA_WORK_RESULT to WORK_SUCCESS)
+                        outputData = createOutputData(WORK_SUCCESS)
                         Result.success(outputData!!)
 
                     } else {
@@ -130,7 +125,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
 
                                 val weatherWidgetBundle =
                                     runBlocking {
-                                        oneCallWeatherResponse
+                                        weather
                                             .toWidgetModel()
                                             .apply {
                                                 this?.let { model ->
@@ -143,7 +138,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
                                 weatherWidgetBundle?.let {
                                     runBlocking {
                                         setWidgetState(
-                                            WeatherInfo.Available(
+                                            WeatherInfoUiState.Available(
                                                 cityName!!,
                                                 weatherWidgetBundle
                                             )
@@ -153,7 +148,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
                                     ?: run { Timber.e("Failed to build weather widget object because fields may be null") }
 
                                 // Create and send outputData
-                                outputData = createOutputData(EXTRA_WORK_RESULT to WORK_SUCCESS)
+                                outputData = createOutputData(WORK_SUCCESS)
                                 Result.success(outputData!!)
                             }
                         }
@@ -161,7 +156,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
                 }
 
                 // Create and send outputData
-                outputData = createOutputData(EXTRA_WORK_RESULT to WORK_SUCCESS)
+                outputData = createOutputData(WORK_SUCCESS)
                 Result.success(outputData!!)
             }
         }
@@ -170,17 +165,32 @@ class WeatherWidgetWorker @AssistedInject constructor(
             }
             .getOrElse {
                 Timber.e("runCatching | getOrElse | error caught with message: ${it.message}")
-                outputData = createOutputData(EXTRA_WORK_RESULT to WORK_ERROR_FAILED)
-                setWidgetState(WeatherInfo.Unavailable(WORK_ERROR_FAILED))
+                outputData = createOutputData(WORK_ERROR_FAILED)
+                setWidgetState(WeatherInfoUiState.Unavailable(WORK_ERROR_FAILED))
                 Result.failure(outputData!!)
             }
     }
 
 
     /**
+     * Creates ouput data to send back to the activity / presenter which is listening to it
+     *
+     * @param message
+     * @return
+     */
+    @SuppressLint("RestrictedApi")
+    private fun createOutputData(message: String): Data {
+        Timber.d("createOutputData() | message: $message")
+        return Data.Builder()
+            .put("work_result", message)
+            .build()
+    }
+
+
+    /**
      * Update the state of all widgets and then force update UI
      */
-    private suspend fun setWidgetState(newState: WeatherInfo) {
+    private suspend fun setWidgetState(newState: WeatherInfoUiState) {
         Timber.d("setWidgetState() | state: $newState")
 
         val widget = WeatherWidget()
@@ -198,7 +208,7 @@ class WeatherWidgetWorker @AssistedInject constructor(
                 glanceId = glanceId,
                 updateState = {
 
-                    if (newState is WeatherInfo.Available) {
+                    if (newState is WeatherInfoUiState.Available) {
                         /*    it[WeatherWidget.getImageKey(48f, 48f)] = Uri.parse(newState.currentData.icon)
                             it[WeatherWidget.sourceKey] = "Picsum Photos"
                             it[WeatherWidget.sourceUrlKey] = newState.currentData.icon*/
@@ -213,7 +223,6 @@ class WeatherWidgetWorker @AssistedInject constructor(
     }
 
     companion object {
-        const val EXTRA_WORK_RESULT = "EXTRA_WORK_RESULT"
         const val WORK_SUCCESS = "Loading finished"
         const val WORK_ERROR_FAILED: String =
             "Some errors occurred while processing data check log to see more details"

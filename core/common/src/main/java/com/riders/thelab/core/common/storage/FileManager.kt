@@ -18,6 +18,33 @@ class FileManager private constructor(private val context: Context) {
     private val mDistriDataFolder =
         if (!LabCompatibilityManager.isAndroid10()) "$dataPath/" else "$dataPath/data/${context.packageName}/files/"
 
+
+    fun getOrCreateFolder(path: String): File {
+        val folder = File(path)
+        if (!folder.exists()) {
+            folder.mkdirs().also {
+                Timber.d("getOrCreateFolder(path = $path) | create folder result : $it")
+            }
+        }
+        return folder
+    }
+
+    fun getOrCreateFile(file: File): File = getOrCreateFile(file.absolutePath)
+
+    fun getOrCreateFile(filePath: String): File {
+        val file = File(filePath)
+        if (!file.exists()) {
+            file.createNewFile().also {
+                Timber.d(
+                    "getOrCreateFile(file name =  ${
+                        filePath.split("/").last()
+                    }) | create new file result : $it"
+                )
+            }
+        }
+        return file
+    }
+
     private fun getDataDirectoryPath(): String =
         if (!LabCompatibilityManager.isAndroid10()) "${Environment.getExternalStorageDirectory()}/SAM_SHARE/${context.packageName}" else "${Environment.getDataDirectory().absolutePath}/data/${context.packageName}/files"
 

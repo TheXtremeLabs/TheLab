@@ -18,11 +18,11 @@ import com.riders.thelab.feature.koin.di.KoinModule
 import kotlinx.coroutines.launch
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.logger.Level
+import org.koin.dsl.koinConfiguration
 import timber.log.Timber
 
 class KoinActivity : BaseComponentActivity() {
@@ -53,8 +53,10 @@ class KoinActivity : BaseComponentActivity() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
                 setContent {
-                    KoinApplication(application = { koinApp.invoke() }) {
+                    KoinApplication(configuration = koinConfiguration { koinApp.invoke() }) {
+
                         val mKoinViewModel: KoinViewModel = koinInject<KoinViewModel>()
+
                         TheLabTheme(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme()) {
                             Surface(
                                 modifier = Modifier.fillMaxSize(),

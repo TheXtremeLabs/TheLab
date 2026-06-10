@@ -20,13 +20,17 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
 import com.riders.thelab.core.common.bus.KotlinBus
 import com.riders.thelab.core.common.bus.Listen
-import com.riders.thelab.core.common.utils.LabLocationManager
+import com.riders.thelab.core.common.location.LabLocationManager
 import com.riders.thelab.core.common.utils.toLocation
-import com.riders.thelab.core.data.local.model.compose.weather.WeatherDataState
-import com.riders.thelab.core.data.local.model.compose.weather.WeatherUIState
 import com.riders.thelab.core.location.GPSProvidersResultModel
 import com.riders.thelab.core.location.LabLocationReceiver
 import com.riders.thelab.core.permissions.Permission
@@ -37,10 +41,16 @@ import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.data.local.bean.SnackBarType
 import com.riders.thelab.core.ui.utils.UIManager
+import com.riders.thelab.feature.weather.core.worker.WeatherDownloadWorker
+import com.riders.thelab.feature.weather.data.compose.WeatherUiModel
+import com.riders.thelab.feature.weather.data.compose.WeatherUiState
+import com.riders.thelab.feature.weather.ui.WeatherViewModel.Companion.URL_REQUEST
+import com.riders.thelab.feature.weather.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.util.UUID
 
 @AndroidEntryPoint
 class WeatherActivity : BaseComponentActivity(), LocationListener {
@@ -48,7 +58,7 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
     private val mWeatherViewModel: WeatherViewModel by viewModels<WeatherViewModel>()
 
     private var mLabLocationManager: LabLocationManager? = null
-    private var mLabLocationReceiver: LabLocationReceiver? = null
+    private val mLabLocationReceiver: LabLocationReceiver by lazy { LabLocationReceiver() }
 
 
     /////////////////////////////////////
@@ -75,14 +85,14 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
             mLabLocationManager?.stopUsingGPS()
         }
 
-        unregisterReceiver(mLabLocationReceiver)
+        mLabLocationReceiver?.let { unregisterReceivers(it) }
     }
 
     public override fun onResume() {
         super.onResume()
         Timber.d("onResume()")
 
-        registerReceivers()
+        registerReceivers(mLabLocationReceiver to LabLocationReceiver.intentFilters)
 
         if (hasLocationPermissions()) {
             registerLabLocationManager()
@@ -95,9 +105,9 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
                     // mWeatherViewModel.updateWeatherDataState(WeatherDataState.Error())
                 }
 
-                if (!mWeatherViewModel.hasWeatherLocalData()) {
-                    mWeatherViewModel.fetchCities(this@WeatherActivity)
-                }
+//                if (!mWeatherViewModel.hasWeatherLocalData()) {
+//                    mWeatherViewModel.fetchCities(this@WeatherActivity)
+//                }
             }
         }
     }
@@ -171,8 +181,7 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
 
                                 val hasInternetConnection by mWeatherViewModel.hasInternetConnection.collectAsStateWithLifecycle()
 
-                                val weatherDataState: WeatherDataState by mWeatherViewModel.weatherDataState.collectAsStateWithLifecycle()
-                                val weatherUiState: WeatherUIState by mWeatherViewModel.weatherUiState.collectAsStateWithLifecycle()
+                                val weatherUiState: WeatherUiState by mWeatherViewModel.weatherUiState.collectAsStateWithLifecycle()
                                 val citySearch by mWeatherViewModel.searchText.collectAsStateWithLifecycle()
                                 /*val citySearchQuery by mWeatherViewModel.citySearchQuery.collectAsStateWithLifecycle(
                                     initialValue = emptyList()
@@ -190,7 +199,6 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
                                         WeatherContent(
                                             theme = theme,
                                             darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
-                                            weatherDataState = weatherDataState,
                                             weatherUiState = weatherUiState,
                                             iconState = mWeatherViewModel.iconState,
                                             searchMenuExpanded = mWeatherViewModel.expanded,
@@ -265,11 +273,6 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
         } ?: run { Timber.e("Lab location object is null") }
     }
 
-    @SuppressLint("UnspecifiedRegisterReceiverFlag")
-    fun registerReceivers() {
-        mLabLocationReceiver = LabLocationReceiver()
-        registerReceiver(mLabLocationReceiver, LabLocationReceiver.getIntentFilters())
-    }
 
     fun fetchCurrentLocation() {
         Timber.d("fetchCurrentLocation()")
@@ -293,7 +296,7 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
 
         if (!iconState) {
             mWeatherViewModel.updateIconState(false)
-            mWeatherViewModel.updateWeatherDataState(WeatherDataState.Error())
+            //mWeatherViewModel.updateWeatherDataState(WeatherDataState.Error())
         } else {
             mWeatherViewModel.updateIconState(true)
 //            mWeatherViewModel.fetchCities(this@WeatherActivity)
@@ -329,6 +332,120 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
             appWidgetManager.requestPinAppWidget(myProvider, null, successCallback)
         }
         }*/
+
+    /////////////////////////////////////
+    //
+    // WORKER
+    //
+    /////////////////////////////////////
+    /**
+     * Launch Worker that will manage download and extraction of the cities zip file from bulk openweather server
+     */
+    @SuppressLint("RestrictedApi")
+    fun startWork() {
+        Timber.d("startWork()")
+
+        val workerConstraints: Constraints = Constraints.Builder()
+            .apply {
+                setRequiredNetworkType(NetworkType.CONNECTED)
+                setRequiresBatteryNotLow(true)
+                setRequiresCharging(false)
+                setRequiresStorageNotLow(true)
+            }
+            .build()
+
+        val weatherCitiesWorkRequest: WorkRequest =
+            OneTimeWorkRequest.Builder(WeatherDownloadWorker::class.java)
+                .setConstraints(workerConstraints)
+                .setInputData(
+                    Data.Builder()
+                        .putString(
+                            URL_REQUEST,
+                            Constants.BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD + Constants.WEATHER_BULK_DOWNLOAD_URL
+                        )
+                        .build()
+                )
+                .addTag(WeatherDownloadWorker::class.java.simpleName)
+                .build()
+
+        val id = weatherCitiesWorkRequest.id
+
+        WorkManager
+            .getInstance(this)
+            .enqueue(weatherCitiesWorkRequest)
+
+        runOnUiThread {
+            listenToTheWorker(id)
+        }
+    }
+
+
+    private fun listenToTheWorker(workerId: UUID) {
+        Timber.d("listenToTheWorker() | ID : $workerId")
+
+        lifecycleScope.launch {
+            WorkManager
+                .getInstance(this@WeatherActivity)
+                .getWorkInfoByIdFlow(workerId)
+                .collect { workInfo: WorkInfo? ->
+                    workInfo?.let {
+                        when (it.state) {
+                            WorkInfo.State.ENQUEUED -> Timber.d("listenToTheWorker() | Worker ENQUEUED")
+                            WorkInfo.State.RUNNING -> {
+                                Timber.d("listenToTheWorker() | Worker RUNNING")
+//                            workerStatus.value = WorkInfo.State.RUNNING
+//                            updateWeatherDataState(WeatherDataState.Loading)
+                            }
+
+                            WorkInfo.State.SUCCEEDED -> {
+                                Timber.d("listenToTheWorker() | Worker SUCCEEDED")
+                                mWeatherViewModel.updateWeatherUIState(
+                                    WeatherUiState.Success(
+                                        WeatherUiModel(cities = mWeatherViewModel.getCitiesSync())
+                                    )
+                                )
+                            }
+
+                            WorkInfo.State.FAILED -> {
+                                Timber.e("listenToTheWorker() | Worker FAILED")
+
+                                runOnUiThread {
+                                    UIManager.showActionInSnackBar(
+                                        this@WeatherActivity,
+                                        "Worker FAILED",
+                                        SnackBarType.ALERT,
+                                        "",
+                                        null
+                                    )
+                                }
+                            }
+
+                            WorkInfo.State.BLOCKED -> Timber.e("listenToTheWorker() | Worker BLOCKED")
+                            WorkInfo.State.CANCELLED -> Timber.e("listenToTheWorker() | Worker CANCELLED")
+                            else -> {
+                                Timber.e("listenToTheWorker() | else branch")
+                                //updateWeatherDataState(WeatherDataState.Error())
+                            }
+                        }
+                    } ?: run {
+                        Timber.e("listenToTheWorker() | WorkInfo is null")
+                        //updateWeatherDataState(WeatherDataState.Error())
+                    }
+                }
+        }
+    }
+
+    fun clearBackgroundResources(activity: WeatherActivity) {
+        cancelWorker(activity)
+    }
+
+    private fun cancelWorker(activity: WeatherActivity) {
+        Timber.e("cancelWorker()")
+        Timber.i("Worker is about to be cancelled")
+        WorkManager
+            .getInstance(activity)
+            .cancelAllWork()
+    }
 
     /////////////////////////////////////
     //

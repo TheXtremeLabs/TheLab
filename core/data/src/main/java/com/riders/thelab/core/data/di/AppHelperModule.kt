@@ -1,5 +1,6 @@
 package com.riders.thelab.core.data.di
 
+/*
 import android.content.Context
 import com.riders.thelab.core.data.IRepository
 import com.riders.thelab.core.data.RepositoryImpl
@@ -67,4 +68,4 @@ object AppHelperModule {
 //    @ViewModelScoped // this is new
     fun provideRepository(dbImpl: DbImpl, apiImpl: ApiImpl, preferencesImpl: PreferencesImpl) =
         RepositoryImpl(dbImpl, apiImpl, preferencesImpl) as IRepository
-}
+}*/

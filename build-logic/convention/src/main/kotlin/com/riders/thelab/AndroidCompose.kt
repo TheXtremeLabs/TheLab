@@ -1,8 +1,6 @@
 package com.riders.thelab
 
-import com.android.build.api.dsl.ApplicationExtension
 import com.android.build.api.dsl.CommonExtension
-import com.android.build.api.dsl.LibraryExtension
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
 import org.gradle.kotlin.dsl.withType
@@ -13,23 +11,13 @@ import java.io.File
  * Configure Compose-specific options
  */
 
-internal fun Project.configureAndroidCompose(applicationExtension: ApplicationExtension) {
-    applicationExtension.apply {
-        configureAndroidCompose(commonExtension = this)
-    }
-}
-
-internal fun Project.configureAndroidCompose(libraryExtension: LibraryExtension) {
-    libraryExtension.apply {
-        configureAndroidCompose(commonExtension = this)
-    }
-}
-
 internal fun Project.configureAndroidCompose(commonExtension: CommonExtension) {
     commonExtension.apply {
-        buildFeatures.buildConfig = true
-        // Enables Jetpack Compose for this module
-        buildFeatures.compose = true
+        buildFeatures.apply {
+            buildConfig = true
+            // Enables Jetpack Compose for this module
+            compose = true
+        }
 
         tasks.withType<KotlinJvmCompile>() {
             compilerOptions {
@@ -43,8 +31,27 @@ internal fun Project.configureAndroidCompose(commonExtension: CommonExtension) {
 
         dependencies {
             val bom = libs.findLibrary("androidx-compose-bom").get()
-            add("implementation", platform(bom))
-            add("androidTestImplementation", platform(bom))
+            implementationPlatform(bom)
+            implementation(libs.findLibrary("androidx-activity-compose").get())
+            implementation(libs.findLibrary("androidx-compose-animation").get())
+            implementation(libs.findLibrary("androidx-compose-fonts").get())
+            implementation(libs.findLibrary("androidx-compose-foundation").get())
+            implementation(libs.findLibrary("androidx-compose-material-icons").get())
+            implementation(libs.findLibrary("androidx-compose-material-iconsExtended").get())
+            implementation(libs.findLibrary("androidx-compose-material3").get())
+            implementation(libs.findLibrary("androidx-compose-runtime").get())
+            implementation(libs.findLibrary("androidx-compose-ui").get())
+            implementation(libs.findLibrary("androidx-compose-ui-graphics").get())
+            "debugImplementation"(libs.findLibrary("androidx-compose-ui-tooling").get())
+            implementation(libs.findLibrary("androidx-compose-ui-tooling-preview").get())
+            implementation(libs.findLibrary("androidx-compose-ui-util").get())
+
+            androidTestImplementationPlatform(bom)
+            androidTestImplementation(libs.findLibrary("androidx-compose-ui-test").get())
+            androidTestDebugImplementation(libs.findLibrary("androidx-compose-ui-tooling").get())
+            androidTestDebugImplementation(
+                libs.findLibrary("androidx-compose-ui-testManifest").get()
+            )
         }
     }
 }

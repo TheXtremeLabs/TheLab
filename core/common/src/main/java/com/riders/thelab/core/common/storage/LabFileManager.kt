@@ -29,6 +29,7 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
+import androidx.core.net.toUri
 
 /**
  * Utils for I/O operations.
@@ -1285,17 +1286,15 @@ object LabFileManager {
             Timber.e("unzipGzip() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
         }
         .onSuccess {
-            Timber.d("unzipGzip() | onSuccess | is success: $it")
+            Timber.d("unzipGzip() | onSuccess | content length: ${it.toString().length}")
         }
         .getOrNull()
 
-    fun getDrawableURI(@NonNull context: Context, @AnyRes drawableId: Int): String {
-        val imageUri: Uri = Uri.parse(
-            ContentResolver.SCHEME_ANDROID_RESOURCE +
-                    "://" + context.resources.getResourcePackageName(drawableId)
-                    + '/' + context.resources.getResourceTypeName(drawableId)
-                    + '/' + context.resources.getResourceEntryName(drawableId)
-        )
+    fun getDrawableURI(context: Context, @AnyRes drawableId: Int): String {
+        val imageUri: Uri = (ContentResolver.SCHEME_ANDROID_RESOURCE +
+                "://" + context.resources.getResourcePackageName(drawableId)
+                + '/' + context.resources.getResourceTypeName(drawableId)
+                + '/' + context.resources.getResourceEntryName(drawableId)).toUri()
 
         return imageUri.toString()
     }

@@ -1,7 +1,6 @@
 package com.riders.thelab.core.data.local
 
 import android.database.Cursor
-import androidx.paging.Pager
 import com.riders.thelab.core.data.local.dao.ArtistDao
 import com.riders.thelab.core.data.local.dao.ContactDao
 import com.riders.thelab.core.data.local.dao.MusicRecognitionDao
@@ -197,7 +196,7 @@ class DbImpl @Inject constructor(
         return mWeatherDao.getCitiesCursor("%$query%")
     }
 
-    override fun deleteAll() {
-        mWeatherDao.deleteAll()
+    override fun deleteAllCities() {
+        mWeatherDao.deleteAllCities()
     }
 }

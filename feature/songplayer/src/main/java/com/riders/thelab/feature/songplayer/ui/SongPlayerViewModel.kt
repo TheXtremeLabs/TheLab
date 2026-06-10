@@ -335,7 +335,7 @@ class SongPlayerViewModel @Inject constructor(
     }
         .onFailure {
             it.printStackTrace()
-            Timber.e("runCatching | onFailure | error caugh with message: ${it.message} (class: ${it.javaClass.canonicalName})")
+            Timber.e("runCatching | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
         }
         .onSuccess {
             Timber.d("runCatching | onSuccess | files fetched successfully")

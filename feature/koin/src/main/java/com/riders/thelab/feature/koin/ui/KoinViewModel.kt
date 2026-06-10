@@ -9,15 +9,15 @@ import androidx.lifecycle.viewModelScope
 import com.riders.thelab.core.data.utils.Resource
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
-import com.riders.thelab.feature.koin.data.RepositoryImpl
+import com.riders.thelab.feature.koin.data.IRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.android.annotation.KoinViewModel
+import org.koin.core.annotation.KoinViewModel
 import timber.log.Timber
 
 @KoinViewModel
 class KoinViewModel(
-    private val repository: RepositoryImpl,
+    private val repository: IRepository,
     uiRepository: IUiRepository
 ) : BaseViewModel(uiRepository), DefaultLifecycleObserver {
 

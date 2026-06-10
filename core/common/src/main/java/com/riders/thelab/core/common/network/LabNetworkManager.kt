@@ -15,11 +15,13 @@ import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flowOn
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -95,6 +97,7 @@ class LabNetworkManager @Inject constructor(
                 connectivityManager.unregisterNetworkCallback(networkCallback)
             }
         }
+            .flowOn(Dispatchers.IO)
 
     //////////////////////////////////
     //

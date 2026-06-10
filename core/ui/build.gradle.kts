@@ -3,8 +3,9 @@ import org.jetbrains.kotlin.compose.compiler.gradle.ComposeFeatureFlag
 plugins {
     alias(libs.plugins.thelab.library)
     alias(libs.plugins.thelab.library.compose)
-    alias(libs.plugins.thelab.hilt)
     alias(libs.plugins.thelab.library.jacoco)
+    alias(libs.plugins.thelab.hilt)
+    alias(libs.plugins.thelab.koin)
     alias(libs.plugins.protobuf)
 }
 
@@ -33,7 +34,6 @@ android {
 configurations.all {
     exclude(group = "com.google.protobuf", module = "protobuf-lite")
 }
-
 
 protobuf {
     protoc {
@@ -123,28 +123,20 @@ dependencies {
     api(libs.androidx.compose.ui.graphics)
     api(libs.androidx.compose.ui.util)
     api(libs.androidx.hilt.navigation.compose)
-    api(libs.androidx.lifecycle.runtimeCompose)
-    api(libs.androidx.lifecycle.viewModelCompose)
     api(libs.androidx.metrics)
     api(libs.androidx.tracing.ktx)
-
+    // Lifecycle
+    implementation(libs.bundles.androidx.lifecycle.compose)
+    // TV
     api(libs.androidx.tv.foundation)
     api(libs.androidx.tv.material)
 
     // Coil
-    api(libs.coil.kt)
-    api(libs.coil.kt.compose)
-    api(libs.coil.kt.network.cache.control)
-    api(libs.coil.kt.network.okhttp)
-    api(libs.coil.kt.svg)
+    api(libs.bundles.coil)
 
     // Glide
-    api(libs.glide)
+    api(libs.bundles.glide)
     ksp(libs.glide.compiler)
-    api(libs.glide.compose)
-    api(libs.glide.blurry)
-    api(libs.glide.transformation)
-    api(libs.glide.landscapist)
 
     // Lottie
     api(libs.lottie)
@@ -154,7 +146,6 @@ dependencies {
     implementation(platform(libs.protobuf.bom))
     implementation(libs.protobuf.javalite)
     implementation(libs.protobuf.kotlin.lite)
-
 
     api(libs.kotools.types)
 

@@ -1,18 +1,20 @@
 import com.android.build.api.dsl.ApplicationExtension
 import com.riders.thelab.configureAndroidCompose
+import com.riders.thelab.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.internal.cc.base.logger
 import org.gradle.kotlin.dsl.getByType
 
 class AndroidApplicationComposeConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply("com.android.application")
-            pluginManager.apply("org.jetbrains.kotlin.plugin.compose")
+            with(pluginManager) {
+                apply(libs.findPlugin("android-application").get().get().pluginId)
+                apply(libs.findPlugin("compose-compiler").get().get().pluginId)
+            }
 
             val extension = extensions.getByType<ApplicationExtension>()
-            configureAndroidCompose(applicationExtension = extension)
+            configureAndroidCompose(extension)
 
             // Optional: Add a log message to confirm the plugin is applied
             logger.lifecycle("✅ Android Application Compose convention plugin applied to '${project.name}'")

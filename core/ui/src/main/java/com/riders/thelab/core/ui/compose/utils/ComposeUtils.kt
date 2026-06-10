@@ -42,6 +42,17 @@ fun Context.findActivity(): Activity? = when (this) {
     else -> null
 }
 
+@JvmName("reifiedFindActivityNullable")
+inline fun <reified A : Activity> Context.findActivity(): A? = when (this) {
+    is BaseAppCompatActivity -> this
+    is BaseComponentActivity -> this
+    is AppCompatActivity -> this
+    is FragmentActivity -> this
+    is ComponentActivity -> this
+    is ContextWrapper -> baseContext.findActivity()
+    else -> null
+} as A?
+
 // OnBackPressedDispatcher
 fun Context.executeOnBackPressed() {
     Timber.d("Context.executeOnBackPressed()")

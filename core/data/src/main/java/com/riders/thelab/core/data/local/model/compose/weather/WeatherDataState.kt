@@ -2,6 +2,7 @@ package com.riders.thelab.core.data.local.model.compose.weather
 
 import androidx.compose.runtime.Stable
 
+@Deprecated("use WeatherDataState instead")
 @Stable
 sealed class WeatherDataState {
     @Stable

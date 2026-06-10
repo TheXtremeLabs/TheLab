@@ -9,10 +9,11 @@ import org.gradle.kotlin.dsl.kotlin
 class AndroidFeatureConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-            pluginManager.apply {
-                apply("thelab.android.library")
-                apply("thelab.android.hilt")
+            with(pluginManager) {
+                apply(libs.findPlugin("thelab-library").get().get().pluginId)
+                apply(libs.findPlugin("thelab-hilt").get().get().pluginId)
             }
+
             extensions.configure<LibraryExtension> {
                 defaultConfig {
                     testInstrumentationRunner =
@@ -21,29 +22,22 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
-//                add("implementation", project(":core:model"))
-                add("implementation", project(":core:ui"))
-//                add("implementation", project(":core:designsystem"))
-                add("implementation", project(":core:data"))
                 add("implementation", project(":core:common"))
-//                add("implementation", project(":core:domain"))
+                add("implementation", project(":core:domain"))
+                add("implementation", project(":core:ui"))
 
-                add("testImplementation", kotlin("test"))
-                add("testImplementation", project(":core:testing"))
-                add("androidTestImplementation", kotlin("test"))
-                add("androidTestImplementation", project(":core:testing"))
-
-                add("implementation", libs.findLibrary("coil.kt").get())
-                add("implementation", libs.findLibrary("coil.kt.compose").get())
 
                 add("implementation", libs.findLibrary("androidx.hilt.navigation.compose").get())
                 add("implementation", libs.findLibrary("androidx.lifecycle.runtimeCompose").get())
                 add("implementation", libs.findLibrary("androidx.lifecycle.viewModelCompose").get())
 
-                add("implementation", libs.findLibrary("kotlinx.coroutines.android").get())
-
                 // Timber : Logging library
                 add("implementation", libs.findLibrary("timber").get())
+
+                add("testImplementation", kotlin("test"))
+                add("testImplementation", project(":core:testing"))
+                add("androidTestImplementation", kotlin("test"))
+                add("androidTestImplementation", project(":core:testing"))
             }
 
             // Optional: Add a log message to confirm the plugin is applied

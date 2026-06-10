@@ -6,9 +6,9 @@ import com.riders.thelab.feature.koin.data.remote.ApiImpl
 import com.riders.thelab.feature.koin.data.remote.dto.PowerBook
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import org.koin.core.annotation.Single
+import org.koin.core.annotation.Singleton
 
-@Single
+@Singleton
 class RepositoryImpl(apiImpl: ApiImpl) : IRepository {
 
     private val mApiImpl: ApiImpl = apiImpl

@@ -2,6 +2,8 @@ package com.riders.thelab.core.ui.compose.base
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -127,6 +129,38 @@ abstract class BaseComponentActivity : ComponentActivity() {
         permissionLauncher?.launch(permissions) ?: {
             Timber.e("Permission launcher has NOT been initialized")
         }
+    }
+
+    fun registerReceivers(vararg receivers: Pair<BroadcastReceiver, IntentFilter>) {
+        Timber.d("registerReceivers() | receivers: ${receivers.contentToString()}")
+        runCatching {
+            receivers.forEach {
+                registerReceiver(it.first, it.second)
+            }
+        }
+            .onFailure {
+                it.printStackTrace()
+                Timber.e("registerReceivers() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
+            }
+            .onSuccess {
+                Timber.d("registerReceivers() | onSuccess | ${receivers.joinToString(",") { it::class.java.simpleName }} registered")
+            }
+    }
+
+    fun unregisterReceivers(vararg receivers: BroadcastReceiver) {
+        Timber.e("unregisterReceivers() | receivers: ${receivers.contentToString()}")
+        runCatching {
+            receivers.forEach {
+                unregisterReceiver(it)
+            }
+        }
+            .onFailure {
+                it.printStackTrace()
+                Timber.e("unregisterReceivers() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
+            }
+            .onSuccess {
+                Timber.d("unregisterReceivers() | onSuccess | ${receivers.joinToString(",") { it::class.java.simpleName }} unregistered")
+            }
     }
 
 

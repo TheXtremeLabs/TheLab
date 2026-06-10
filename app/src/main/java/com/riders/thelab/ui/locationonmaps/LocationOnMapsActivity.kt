@@ -42,7 +42,7 @@ import com.riders.thelab.R
 import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabAddressesUtils.getAddressToString
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.core.common.utils.LabLocationManager
+import com.riders.thelab.core.common.location.LabLocationManager
 import com.riders.thelab.core.data.local.bean.MapsEnum
 import com.riders.thelab.core.permissions.Permission
 import com.riders.thelab.core.permissions.PermissionManager

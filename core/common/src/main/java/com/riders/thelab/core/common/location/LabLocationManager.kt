@@ -1,4 +1,4 @@
-package com.riders.thelab.core.common.utils
+package com.riders.thelab.core.common.location
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -10,21 +10,21 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
+import androidx.activity.ComponentActivity
 import androidx.annotation.WorkerThread
 import androidx.appcompat.app.AlertDialog
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import com.riders.thelab.core.common.broadcast.LabLocationBroadcastReceiver
+import com.riders.thelab.core.common.utils.LabCompatibilityManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import timber.log.Timber
 import java.lang.ref.WeakReference
-import kotlin.reflect.KProperty
 
 class LabLocationManager private constructor(
     private val context: Context,
@@ -32,7 +32,9 @@ class LabLocationManager private constructor(
 ) : LocationListener {
 
     // Declaring a Location Manager
-    private var locationManager: LocationManager
+    private val locationManager: LocationManager by lazy {
+        context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    }
 
     // flag for GPS status
     private var isGPSEnabled = false
@@ -40,36 +42,39 @@ class LabLocationManager private constructor(
     // flag for network status
     private var isNetworkEnabled = false
 
-    // flag for location availability
+    // flag for mLocation availability
     var canGetLocation: Boolean = false
 
     val isLocationEnabled: State<Boolean>
         get() = mutableStateOf(canGetLocation())
 
 
-    // location
-    private var location: Location? = null
+    // mLocation
+    private var mLocation: Location? = null
 
     private var mWeakReference: WeakReference<Activity>? = null
+
+    private val mLabLocationReceiver: LabLocationBroadcastReceiver by lazy {
+        LabLocationBroadcastReceiver()
+    }
 
     /////////////////////////////////////
     //
     // Composable states
     //
     /////////////////////////////////////
-    private var _canGetLocationState: MutableStateFlow<Boolean> = MutableStateFlow(false)
-    val canGetLocationState: StateFlow<Boolean> = _canGetLocationState
-    private var _locationState: MutableStateFlow<Location?> = MutableStateFlow(null)
-    val locationState: StateFlow<Location?> = _locationState
-
-    fun updateCanGetLocationState(canGetLocation: Boolean) {
-        Timber.d("updateCanGetLocationState() | canGetLocation: $canGetLocation")
-        this._canGetLocationState.update { canGetLocation }
-    }
+    private var _locationState: MutableStateFlow<LocationState> =
+        MutableStateFlow(LocationState.Unknown)
+    val locationState: StateFlow<LocationState> = _locationState
 
     fun updateLocationState(location: Location?) {
-        Timber.d("updateLocationState() | location: $location")
-        this._locationState.update { location }
+        Timber.d("updateLocationState() | mLocation: $location")
+        if (null == location) {
+            this._locationState.update { LocationState.Unknown }
+            return
+        }
+
+        this._locationState.update { LocationState.Located(location) }
     }
 
     /////////////////////////////////////
@@ -82,11 +87,58 @@ class LabLocationManager private constructor(
         locationListener: LocationListener
     ) : this(context = activity.applicationContext, locationListener = locationListener) {
         this.mWeakReference = WeakReference(activity)
+
+        if (LabCompatibilityManager.isAndroid10()) {
+            ContextCompat.registerReceiver(
+                activity,
+                this.mLabLocationReceiver,
+                LabLocationBroadcastReceiver.intentFilters,
+                ContextCompat.RECEIVER_EXPORTED
+            )
+        } else {
+            @SuppressLint("UnspecifiedRegisterReceiverFlag")
+            activity.registerReceiver(
+                this.mLabLocationReceiver,
+                LabLocationBroadcastReceiver.intentFilters
+            )
+        }
+    }
+
+    constructor(
+        componentActivity: ComponentActivity,
+        locationListener: LocationListener
+    ) : this(context = componentActivity.applicationContext, locationListener = locationListener) {
+        this.mWeakReference = WeakReference(componentActivity)
+
+        val lifecycleWrapper = object : DefaultLifecycleObserver {
+            override fun onResume(owner: LifecycleOwner) {
+                super.onResume(owner)
+
+                if (LabCompatibilityManager.isAndroid10()) {
+                    ContextCompat.registerReceiver(
+                        componentActivity,
+                        this@LabLocationManager.mLabLocationReceiver,
+                        LabLocationBroadcastReceiver.intentFilters,
+                        ContextCompat.RECEIVER_EXPORTED
+                    )
+                } else {
+                    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+                    componentActivity.registerReceiver(
+                        this@LabLocationManager.mLabLocationReceiver,
+                        LabLocationBroadcastReceiver.intentFilters
+                    )
+                }
+            }
+
+            override fun onPause(owner: LifecycleOwner) {
+                super.onPause(owner)
+                componentActivity.unregisterReceiver(this@LabLocationManager.mLabLocationReceiver)
+            }
+        }
     }
 
     init {
         Timber.d("LabLocationManager | init")
-        locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         if (null == this.locationListener) {
             this.locationListener = this
@@ -118,9 +170,9 @@ class LabLocationManager private constructor(
                 null
             } else {
                 getLocationViaNetwork()
-                updateLocationState(this.location)
-                // return location object
-                this.location
+                updateLocationState(this.mLocation)
+                // return mLocation object
+                this.mLocation
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -133,9 +185,9 @@ class LabLocationManager private constructor(
                 null
             } else {
                 getLocationViaGPS()
-                updateLocationState(this.location)
-                // return location object
-                this.location
+                updateLocationState(this.mLocation)
+                // return mLocation object
+                this.mLocation
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -158,10 +210,10 @@ class LabLocationManager private constructor(
         } ?: run { Timber.e("getLocationViaNetwork() | locationListener is null") }
 
         locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)?.let {
-            Timber.d("Network Enabled | location: $it")
+            Timber.d("Network Enabled | mLocation: $it")
             updateLocationState(it)
-            this@LabLocationManager.location = it
-        } ?: run { Timber.e("Unable to get location via network provider") }
+            this@LabLocationManager.mLocation = it
+        } ?: run { Timber.e("Unable to get mLocation via network provider") }
     }
 
     @SuppressLint("MissingPermission")
@@ -179,10 +231,10 @@ class LabLocationManager private constructor(
         } ?: run { Timber.e("getLocationViaGPS() | locationListener is null") }
 
         locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)?.let {
-            Timber.d("GPS Enabled | location: $it")
+            Timber.d("GPS Enabled | mLocation: $it")
             updateLocationState(it)
-            this@LabLocationManager.location = it
-        } ?: run { Timber.e("Unable to get location via gps provider") }
+            this@LabLocationManager.mLocation = it
+        } ?: run { Timber.e("Unable to get mLocation via gps provider") }
     }
 
 
@@ -256,10 +308,10 @@ class LabLocationManager private constructor(
     //
     /////////////////////////////////////
     override fun onLocationChanged(location: Location) {
-        Timber.d("onLocationChanged() | location : $location")
+        Timber.d("onLocationChanged() | mLocation : $location")
 
         updateLocationState(location)
-        this.location = location
+        this.mLocation = location
     }
 
     @Deprecated(
@@ -276,7 +328,9 @@ class LabLocationManager private constructor(
     override fun onProviderEnabled(provider: String) {
         Timber.d("onProviderEnabled() | provider: $provider")
 
-        updateCanGetLocationState(canGetLocation())
+        canGetLocation = canGetLocation()
+        updateLocationState(if (!canGetLocation) null else mLocation)
+
         /*mWeakReference?.let { ref ->
 
             // Get activity from weak reference activity object
@@ -298,11 +352,12 @@ class LabLocationManager private constructor(
             }
         }*/
     }
+
     override fun onProviderDisabled(provider: String) {
         Timber.e("onProviderDisabled() | provider: $provider")
 
         canGetLocation = canGetLocation()
-        updateCanGetLocationState(canGetLocation())
+        updateLocationState(if (!canGetLocation) null else mLocation)
 
         /*mWeakReference?.let { ref ->
 
@@ -356,8 +411,20 @@ class LabLocationManager private constructor(
             mInstance ?: LabLocationManager(context = activity).also { mInstance = it }
         }
 
+        fun getInstance(activity: ComponentActivity): LabLocationManager =
+            mInstance ?: synchronized(this) {
+                mInstance ?: LabLocationManager(context = activity).also { mInstance = it }
+            }
+
         fun getInstance(
             activity: Activity,
+            locationListener: LocationListener
+        ): LabLocationManager = mInstance ?: LabLocationManager(activity, locationListener).also {
+            mInstance = it
+        }
+
+        fun getInstance(
+            activity: ComponentActivity,
             locationListener: LocationListener
         ): LabLocationManager = mInstance ?: LabLocationManager(activity, locationListener).also {
             mInstance = it

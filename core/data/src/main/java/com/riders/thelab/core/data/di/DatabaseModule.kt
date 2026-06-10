@@ -1,5 +1,6 @@
 package com.riders.thelab.core.data.di
 
+/*
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -24,10 +25,12 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 internal object DatabaseModule {
 
-    /*@Singleton
+    */
+/*@Singleton
     @Provides
     fun providesWeatherAppSearchManager(@ApplicationContext context: Context): WeatherSearchManager =
-        WeatherSearchManager(context)*/
+        WeatherSearchManager(context)*//*
+
 
 
     //TODO : Due to Heroku back-end free services ending,
@@ -77,4 +80,4 @@ internal object DatabaseModule {
     @Singleton
     @Provides
     fun provideWeatherDao(appDatabase: LabDatabase): WeatherDao = appDatabase.getWeatherDao()
-}
+}*/

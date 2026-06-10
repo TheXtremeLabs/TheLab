@@ -33,11 +33,12 @@ import coil3.request.ImageRequest
 import coil3.request.allowHardware
 import coil3.request.crossfade
 import com.riders.thelab.core.common.utils.DateTimeUtils
-import com.riders.thelab.core.data.local.model.weather.WeatherModel
+import com.riders.thelab.core.domain.model.weather.Weather
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.weather.ui.previewprovider.PreviewProviderWeather
 
 
 ///////////////////////////////////////////////////
@@ -50,7 +51,7 @@ fun WeatherDailyForecast(
     theme: AppTheme,
     darkTheme: Boolean,
     modifier: Modifier = Modifier,
-    dailyWeatherList: List<WeatherModel>
+    dailyWeatherList: List<Weather>
 ) {
     val listState = rememberLazyListState()
 
@@ -145,7 +146,7 @@ fun WeatherDailyForecast(
 fun WeatherHourlyForecast(
     theme: AppTheme,
     darkTheme: Boolean,
-    hourlyWeatherList: List<WeatherModel>,
+    hourlyWeatherList: List<Weather>,
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
@@ -222,7 +223,7 @@ fun WeatherHourlyForecast(
 ///////////////////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewWeatherDailyForecast(@PreviewParameter(PreviewProviderWeather::class) weather: WeatherModel) {
+private fun PreviewWeatherDailyForecast(@PreviewParameter(PreviewProviderWeather::class) weather: Weather) {
     TheLabTheme(theme = AppTheme.Default) {
         WeatherDailyForecast(
             theme = AppTheme.Default,
@@ -235,7 +236,7 @@ private fun PreviewWeatherDailyForecast(@PreviewParameter(PreviewProviderWeather
 
 @DevicePreviews
 @Composable
-private fun PreviewWeatherHourlyForecast(@PreviewParameter(PreviewProviderWeather::class) weather: WeatherModel) {
+private fun PreviewWeatherHourlyForecast(@PreviewParameter(PreviewProviderWeather::class) weather: Weather) {
     TheLabTheme(theme = AppTheme.Default) {
         WeatherHourlyForecast(
             theme = AppTheme.Default,

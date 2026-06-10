@@ -16,32 +16,25 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.work.Constraints
-import androidx.work.Data
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
-import androidx.work.WorkManager
-import androidx.work.WorkRequest
 import com.riders.thelab.core.common.network.LabNetworkManager
 import com.riders.thelab.core.common.utils.DateTimeUtils
 import com.riders.thelab.core.common.utils.LabAddressesUtils
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
+import com.riders.thelab.core.common.utils.Resource
 import com.riders.thelab.core.common.utils.toLocation
-import com.riders.thelab.core.data.IRepository
-import com.riders.thelab.core.data.local.model.compose.weather.WeatherDataState
-import com.riders.thelab.core.data.local.model.compose.weather.WeatherUIState
-import com.riders.thelab.core.data.local.model.weather.CityModel
-import com.riders.thelab.core.data.local.model.weather.WeatherData
-import com.riders.thelab.core.data.local.model.weather.WeatherModel
-import com.riders.thelab.core.data.local.model.weather.toModel
-import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
+import com.riders.thelab.core.domain.model.weather.City
+import com.riders.thelab.core.domain.model.weather.Weather
+import com.riders.thelab.core.domain.usecase.weather.DownloadWeatherDataUseCase
+import com.riders.thelab.core.domain.usecase.weather.GetCitiesUseCase
+import com.riders.thelab.core.domain.usecase.weather.GetCurrentWeatherUseCase
+import com.riders.thelab.core.domain.usecase.weather.InsertWeatherDataUseCase
+import com.riders.thelab.core.domain.usecase.weather.SearchCityUseCase
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
-import com.riders.thelab.core.ui.data.local.bean.SnackBarType
 import com.riders.thelab.core.ui.utils.UIManager
-import com.riders.thelab.feature.weather.core.worker.WeatherDownloadWorker
-import com.riders.thelab.feature.weather.utils.Constants
+import com.riders.thelab.feature.weather.data.compose.WeatherUiModel
+import com.riders.thelab.feature.weather.data.compose.WeatherUiState
 import com.riders.thelab.feature.weather.utils.WeatherUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -54,33 +47,36 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.util.Locale
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
     @param:ApplicationContext private val context: Context,
     labNetworkManager: LabNetworkManager,
-    private val repository: IRepository,
-    uiRepository: IUiRepository
+    uiRepository: IUiRepository,
+    private val downloadWeatherDataUseCase: DownloadWeatherDataUseCase,
+    private val getCitiesUseCase: GetCitiesUseCase,
+    private val getCurrentWeatherUseCase: GetCurrentWeatherUseCase,
+    private val insertWeatherDataUseCase: InsertWeatherDataUseCase,
+    private val searchCityUseCase: SearchCityUseCase
 ) : BaseViewModel(uiRepository), DefaultLifecycleObserver {
 
     //////////////////////////////////////////
     // Compose states
     //////////////////////////////////////////
-    private var _weatherDataState: MutableStateFlow<WeatherDataState> =
-        MutableStateFlow(WeatherDataState.Loading)
-    val weatherDataState: StateFlow<WeatherDataState> = _weatherDataState
-    private var _weatherUiState: MutableStateFlow<WeatherUIState> =
-        MutableStateFlow(WeatherUIState.None)
-    val weatherUiState: StateFlow<WeatherUIState> = _weatherUiState
-    private var _searchText: MutableStateFlow<String> = MutableStateFlow("")
-    val searchText: StateFlow<String> = _searchText
+    val weatherUiState: StateFlow<WeatherUiState>
+        // Since Kotlin 2.3.20 : Introducing backing properties
+        field = MutableStateFlow<WeatherUiState>(WeatherUiState.None)
+
+    val searchText: StateFlow<String>
+        // Since Kotlin 2.3.20 : Introducing backing properties
+        field = MutableStateFlow<String>("")
 
     // Network State
     var hasInternetConnection: StateFlow<Boolean> = labNetworkManager.isConnectedFlow.stateIn(
@@ -97,27 +93,17 @@ class WeatherViewModel @Inject constructor(
         private set
 
     // Suggestions for search
-    var suggestions: SnapshotStateList<CityModel> = mutableStateListOf()
+    var suggestions: SnapshotStateList<City> = mutableStateListOf()
         private set
 
 
-    fun updateWeatherDataState(state: WeatherDataState) {
-        if (state is WeatherDataState.Error) {
-            Timber.e("updateWeatherDataState() | Error state : ${state.errorResponse?.message}")
-        } else {
-            Timber.d("updateWeatherDataState() | state : $state")
-        }
-
-        _weatherDataState.value = state
-    }
-
-    private fun updateWeatherUIState(state: WeatherUIState) {
-        _weatherUiState.value = state
+    fun updateWeatherUIState(state: WeatherUiState) {
+        weatherUiState.update { state }
     }
 
 
     fun updateSearchText(newSearchText: String) {
-        this._searchText.value = newSearchText
+        this.searchText.value = newSearchText
 
         if (2 <= newSearchText.length) {
             if (null != mSearchJob && mSearchJob?.isActive == true) {
@@ -138,7 +124,7 @@ class WeatherViewModel @Inject constructor(
         this.expanded = expanded
     }
 
-    private fun updateSuggestions(suggestions: List<CityModel>) {
+    private fun updateSuggestions(suggestions: List<City>) {
         this.suggestions.clear()
         this.suggestions.addAll(suggestions)
     }
@@ -168,7 +154,7 @@ class WeatherViewModel @Inject constructor(
     private val coroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
             throwable.printStackTrace()
-            Timber.e(throwable.message)
+            Timber.e("coroutineExceptionHandler | Error caught with message: ${throwable.message} (class: ${throwable.javaClass.canonicalName})")
         }
     private val searchCityCoroutineExceptionHandler =
         CoroutineExceptionHandler { _, throwable ->
@@ -191,11 +177,7 @@ class WeatherViewModel @Inject constructor(
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
 
-        viewModelScope.launch {
-            if (hasWeatherLocalData()) {
-                updateWeatherDataState(WeatherDataState.SuccessWeatherData(true))
-            }
-        }
+        viewModelScope.launch { checkWeatherLocalData() }
     }
 
     ///////////////////////////
@@ -223,29 +205,38 @@ class WeatherViewModel @Inject constructor(
                 delay(150L)
 
                 if (query.isBlank()) {
-                    repository.searchCity(query).all {
-                        Timber.d("getCitiesFromDb() | query.isBlank() | Search: $it")
-                        true
+                    when (val result = searchCityUseCase(query)) {
+                        is Resource.Success -> {
+                            result.data.all {
+                                Timber.d("getCitiesFromDb() | query.isBlank() | Search: $it")
+                                true
+                            }
+                        }
+
+                        else -> false
                     }
                 } else {
                     val sanitizedQuery =
                         sanitizeSearchQuery(Editable.Factory.getInstance().newEditable(query))
 
                     // Replace % with * here
-                    val results = repository.searchCity(sanitizedQuery).let {
-                        Timber.d("getCitiesFromDb() | query.isNotBlank() | list: $it")
-                        it
-                    }
+                    when (val result = searchCityUseCase(sanitizedQuery)) {
+                        is Resource.Success -> {
+                            Timber.d("getCitiesFromDb() | query.isNotBlank() | list: ${result.data}")
+                            handleResults(result.data)
+                        }
 
-                    handleResults(results)
+                        else -> false
+                    }
                 }
             }
+
         viewModelScope.launch { mSearchJob?.join() }
     }
 
-    private fun handleResults(cityModel: List<CityModel>) {
-        Timber.d("handleResults() | cityModel size: ${cityModel.size}, update suggestions")
-        updateSuggestions(cityModel)
+    private fun handleResults(cities: List<City>) {
+        Timber.d("handleResults() | cities size: ${cities.size}, update suggestions")
+        updateSuggestions(cities)
     }
 
     private fun handleError(t: Throwable) {
@@ -274,12 +265,9 @@ class WeatherViewModel @Inject constructor(
 
     fun retry() {
         Timber.d("Retrying...")
-        updateWeatherDataState(WeatherDataState.Loading)
+        updateWeatherUIState(WeatherUiState.Loading("Retrying fetching cities..."))
 
-        (mWeakReference?.get() as? WeatherActivity)?.let { activity -> startWork(activity) }
-            ?: run {
-                Timber.e("retry() | Activity object is null")
-            }
+        (mWeakReference?.get() as? WeatherActivity)?.startWork()
     }
 
     @SuppressLint("NewApi")
@@ -312,27 +300,33 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
-    fun hasWeatherLocalData(): Boolean = try {
-        // First step
-        // Call repository to check if there is data in database
-        val weatherData = runBlocking(Dispatchers.IO) { repository.getWeatherData() }
+    fun checkWeatherLocalData(callback: ((Boolean) -> Unit)? = null) {
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val result = getCitiesUseCase.invoke(null)) {
+                is Resource.Success -> {
+                    if (result.data.isEmpty()) {
+                        updateWeatherUIState(WeatherUiState.NoDataFound)
+                        callback?.invoke(false)
+                    } else {
+                        if (weatherUiState.value is WeatherUiState.Success) {
+                            val model: WeatherUiModel =
+                                (weatherUiState.value as WeatherUiState.Success).model.copy(cities = result.data)
+                            val finalState: WeatherUiState =
+                                (weatherUiState.value as WeatherUiState.Success).copy(model = model)
+                            weatherUiState.update { finalState }
+                        } else {
+                            updateWeatherUIState(WeatherUiState.Success(WeatherUiModel(result.data)))
+                        }
+                        callback?.invoke(true)
+                    }
+                }
 
-        if (null == weatherData || !weatherData.isWeatherData) {
-            // In this case record's return is null
-            // then we have to call our Worker to perform
-            // the web service call to retrieve data from api
-            Timber.e("hasWeatherLocalData() | List is empty. No Record found in database")
-            false
-        } else {
-            // In this case data already exists in database
-            // Load data then let the the user perform his request
-            Timber.d("hasWeatherLocalData() | Record found in database. Continue...")
-            true
+                else -> {
+                    Timber.e("onStart() | Error while fetching cities")
+                    callback?.invoke(false)
+                }
+            }
         }
-    } catch (throwable: Exception) {
-        throwable.printStackTrace()
-        Timber.e("hasWeatherLocalData() | Error while fetching records in database")
-        false
     }
 
     fun fetchCities(activity: WeatherActivity) {
@@ -340,59 +334,76 @@ class WeatherViewModel @Inject constructor(
 
         if (!hasInternetConnection.value) {
             Timber.e("fetchCities() | No internet connection detected")
-            updateWeatherDataState(WeatherDataState.Error(Throwable(message = "Please check your internet connection")))
+            updateWeatherUIState(WeatherUiState.Error(message = "Please check your internet connection"))
             return
         }
 
-        updateWeatherDataState(WeatherDataState.Loading)
+        updateWeatherUIState(WeatherUiState.Loading("Fetching cities..."))
 
         viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            if (!hasWeatherLocalData()) {
-                // Only for debug purposes
-                // Use worker to make long job operation in background
-                Timber.e("fetchCities() | Use worker to make long job operation in background...")
+            checkWeatherLocalData { hasWeatherLocalData ->
+                if (!hasWeatherLocalData) {
+                    // Only for debug purposes
+                    // Use worker to make long job operation in background
+                    Timber.e("fetchCities() | Use worker to make long job operation in background...")
 
-                withContext(Dispatchers.IO) {
-                    startWork(activity)
-                }
-            } else {
-                // In this case data already exists in database
-                // Load data then let the the user perform his request
-                Timber.d("Record found in database. Continue...")
-                withContext(Dispatchers.Main) {
-                    isWeatherData.value = true
-                    updateWeatherDataState(WeatherDataState.SuccessWeatherData(true))
+                    (mWeakReference?.get() as? WeatherActivity)?.startWork()
+                } else {
+                    // In this case data already exists in database
+                    // Load data then let the the user perform his request
+                    Timber.d("Record found in database. Continue...")
+                    /* withContext(Dispatchers.Main) {
+                         isWeatherData.value = true
+                         updateWeatherDataState(WeatherDataState.SuccessWeatherData(true))
+                     }*/
                 }
             }
         }
     }
-
 
     fun fetchWeather(location: Location) {
         Timber.d("fetchWeather()")
-        viewModelScope.launch(Dispatchers.IO + SupervisorJob() + coroutineExceptionHandler) {
-            try {
-                val weatherResponse = repository.getWeatherOneCallAPI(location)
+        viewModelScope.launch(Dispatchers.IO + coroutineExceptionHandler) {
 
-                if (null == weatherResponse) {
-                    Timber.e("fetchWeather() | WeatherResponse is null")
-                    updateWeatherUIState(WeatherUIState.Error(Throwable("WeatherResponse is null")))
-                    return@launch
+            when (val result = getCurrentWeatherUseCase.invoke(location)) {
+                is Resource.Success -> {
+                    Timber.d("fetchWeather() | Success")
+                    processOneCallResponse(result.data)
                 }
 
-                processOneCallResponse(weatherResponse)
-            } catch (throwable: Exception) {
-                Timber.e(throwable)
-                withContext(Dispatchers.Main) {
-                    updateWeatherUIState(WeatherUIState.Error(throwable))
+                is Resource.Error -> {
+                    Timber.e("fetchWeather() | WeatherResponse is null")
+                    updateWeatherUIState(WeatherUiState.Error(result.message))
                 }
             }
         }
     }
 
-    private suspend fun processOneCallResponse(weatherResponse: OneCallWeatherResponse) {
+    fun insertWeatherData(cities: List<City>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            when (val result = insertWeatherDataUseCase.invoke(cities)) {
+                is Resource.Success -> {
+                    Timber.d("insertWeatherData() | Success")
+                }
+
+                is Resource.Error -> {
+                    Timber.e("insertWeatherData() | Error")
+                    updateWeatherUIState(WeatherUiState.Error(result.message))
+                }
+            }
+        }
+    }
+
+    fun getCitiesSync(): List<City> = runBlocking(Dispatchers.IO) {
+        return@runBlocking when (val result = getCitiesUseCase.invoke(null)) {
+            is Resource.Success -> result.data
+            else -> emptyList()
+        }
+    }
+
+    private suspend fun processOneCallResponse(weatherResponse: Weather) {
         runCatching {
-            val weatherModel: WeatherModel = weatherResponse.toModel().apply {
+            val weatherModel: Weather = weatherResponse.apply {
                 (mWeakReference?.get() as? WeatherActivity)?.let { activity ->
                     getCityNameWithCoordinates(
                         activity = activity,
@@ -408,11 +419,11 @@ class WeatherViewModel @Inject constructor(
 
                 this.sunriseAsString = DateTimeUtils.formatMillisToTimeHoursMinutes(
                     weatherResponse.timezone!!,
-                    weatherResponse.currentWeather?.sunrise!!
+                    weatherResponse.sunrise
                 )
                 this.sunsetAsString = DateTimeUtils.formatMillisToTimeHoursMinutes(
                     weatherResponse.timezone!!,
-                    weatherResponse.currentWeather?.sunset!!
+                    weatherResponse.sunset
                 )
 
                 this.weatherIconUrl =
@@ -440,14 +451,29 @@ class WeatherViewModel @Inject constructor(
             }
 
             withContext(Dispatchers.Main) {
-                updateWeatherUIState(WeatherUIState.Success(weatherModel))
+                if (weatherUiState.value !is WeatherUiState.Success) {
+                    updateWeatherUIState(
+                        WeatherUiState.Success(
+                            WeatherUiModel(
+                                cities = getCitiesSync(),
+                                weather = weatherModel
+                            )
+                        )
+                    )
+                } else {
+                    val state = weatherUiState.value as WeatherUiState.Success
+                    val model = state.model.copy(weather = weatherModel)
+                    weatherUiState.update {
+                        (weatherUiState.value as WeatherUiState.Success).copy(model = model)
+                    }
+                }
             }
         }
             .onFailure { exception: Throwable -> Timber.e("processOneCallResponse() | onFailure | Error caught with message : ${exception.message} (class : ${exception.javaClass.canonicalName})") }
             .onSuccess { Timber.e("processOneCallResponse() | onSuccess") }
     }
 
-    private fun getMaxMinTemperature(hourlyWeather: List<WeatherModel>): Pair<Double, Double> {
+    private fun getMaxMinTemperature(hourlyWeather: List<Weather>): Pair<Double, Double> {
         Timber.d("getMaxMinTemperature() | hourlyWeather: $hourlyWeather")
         var minStoredTemperature: Double = hourlyWeather[0].temperature?.temperature ?: 0.0
         var maxStoredTemperature: Double = hourlyWeather[0].temperature?.temperature ?: 0.0
@@ -465,124 +491,6 @@ class WeatherViewModel @Inject constructor(
         }
 
         return minStoredTemperature to maxStoredTemperature
-    }
-
-
-    /////////////////////////////////////
-    //
-    // WORKER
-    //
-    /////////////////////////////////////
-    /**
-     * Launch Worker that will manage download and extraction of the cities zip file from bulk openweather server
-     */
-    @SuppressLint("RestrictedApi")
-    fun startWork(activity: WeatherActivity) {
-        Timber.d("startWork()")
-
-        val workerConstraints: Constraints = Constraints.Builder()
-            .apply {
-                setRequiredNetworkType(NetworkType.CONNECTED)
-                setRequiresBatteryNotLow(true)
-                setRequiresCharging(false)
-                setRequiresStorageNotLow(true)
-            }
-            .build()
-
-        val weatherCitiesWorkRequest: WorkRequest =
-            OneTimeWorkRequest.Builder(WeatherDownloadWorker::class.java)
-                .setConstraints(workerConstraints)
-                .setInputData(
-                    Data.Builder()
-                        .putString(
-                            URL_REQUEST,
-                            Constants.BASE_ENDPOINT_WEATHER_BULK_DOWNLOAD + Constants.WEATHER_BULK_DOWNLOAD_URL
-                        )
-                        .build()
-                )
-                .addTag(WeatherDownloadWorker::class.java.simpleName)
-                .build()
-
-        val id = weatherCitiesWorkRequest.id
-
-        WorkManager
-            .getInstance(activity)
-            .enqueue(weatherCitiesWorkRequest)
-
-        activity.runOnUiThread {
-            listenToTheWorker(activity, id)
-        }
-    }
-
-
-    private fun listenToTheWorker(activity: WeatherActivity, workerId: UUID) {
-        Timber.d("listenToTheWorker : $workerId")
-
-        WorkManager
-            .getInstance(activity)
-            .getWorkInfoByIdLiveData(workerId)
-            .observe(activity) { workInfo: WorkInfo? ->
-                workInfo?.let {
-                    when (it.state) {
-                        WorkInfo.State.ENQUEUED -> Timber.d("Worker ENQUEUED")
-                        WorkInfo.State.RUNNING -> {
-                            Timber.d("Worker RUNNING")
-                            workerStatus.value = WorkInfo.State.RUNNING
-                            updateWeatherDataState(WeatherDataState.Loading)
-                        }
-
-                        WorkInfo.State.SUCCEEDED -> {
-
-                            // Save data in database
-                            viewModelScope.launch(Dispatchers.IO) {
-                                repository.insertWeatherData(WeatherData(true))
-                            }
-
-                            updateWeatherDataState(WeatherDataState.SuccessWeatherData(true))
-                            workerStatus.value = WorkInfo.State.SUCCEEDED
-                        }
-
-                        WorkInfo.State.FAILED -> {
-                            Timber.e("Worker FAILED")
-                            workerStatus.value = WorkInfo.State.FAILED
-
-                            activity.runOnUiThread {
-                                UIManager.showActionInSnackBar(
-                                    activity,
-                                    "Worker FAILED",
-                                    SnackBarType.ALERT,
-                                    "",
-                                    null
-                                )
-                            }
-
-                            updateWeatherDataState(WeatherDataState.Error())
-                        }
-
-                        WorkInfo.State.BLOCKED -> Timber.e("Worker BLOCKED")
-                        WorkInfo.State.CANCELLED -> Timber.e("Worker CANCELLED")
-                        else -> {
-                            Timber.e("Else branch")
-                            updateWeatherDataState(WeatherDataState.Error())
-                        }
-                    }
-                } ?: run {
-                    Timber.e("listenToTheWorker() | WorkInfo is null")
-                    updateWeatherDataState(WeatherDataState.Error())
-                }
-            }
-    }
-
-    fun clearBackgroundResources(activity: WeatherActivity) {
-        cancelWorker(activity)
-    }
-
-    private fun cancelWorker(activity: WeatherActivity) {
-        Timber.e("cancelWorker()")
-        Timber.i("Worker is about to be cancelled")
-        WorkManager
-            .getInstance(activity)
-            .cancelAllWork()
     }
 
 

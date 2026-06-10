@@ -3,11 +3,10 @@ import com.android.build.api.variant.ApplicationAndroidComponentsExtension
 import com.riders.thelab.configureFlavors
 import com.riders.thelab.configureKotlinAndroid
 import com.riders.thelab.configurePrintApksTask
-import com.riders.thelab.configureTimber
+import com.riders.thelab.jdkVersion
 import com.riders.thelab.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.internal.cc.base.logger
 import org.gradle.kotlin.dsl.configure
 import org.jetbrains.kotlin.gradle.dsl.kotlinExtension
 
@@ -15,20 +14,19 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             with(pluginManager) {
-                apply("com.android.application")
-                apply("org.jetbrains.kotlin.android")
-                apply("kotlin-parcelize")
-                apply("kotlinx-serialization")
-                apply("com.google.devtools.ksp")
+                apply(libs.findPlugin("android-application").get().get().pluginId)
+                apply(libs.findPlugin("kotlin-android").get().get().pluginId)
+                apply(libs.findPlugin("kotlin-serialization").get().get().pluginId)
+                apply(libs.findPlugin("ksp").get().get().pluginId)
             }
 
             // Configure Jvm ToolChain
             with(kotlinExtension) {
-                jvmToolchain(libs.findVersion("javaVersion").get().requiredVersion.toInt())
+                jvmToolchain(jdkVersion)
             }
 
             extensions.configure<ApplicationExtension> {
-                configureKotlinAndroid(applicationExtension = this)
+                configureKotlinAndroid(this)
 
                 defaultConfig.apply {
                     targetSdk = AndroidConfiguration.Sdk.TARGET
@@ -38,7 +36,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 }
 
                 configureFlavors(applicationExtension = this)
-                configureTimber()
             }
             extensions.configure<ApplicationAndroidComponentsExtension> {
                 configurePrintApksTask(this)
