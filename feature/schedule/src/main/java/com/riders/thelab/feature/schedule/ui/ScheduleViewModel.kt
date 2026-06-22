@@ -23,12 +23,14 @@ import com.riders.thelab.core.ui.data.local.IUiRepository
 import com.riders.thelab.core.ui.utils.UIManager
 import com.riders.thelab.feature.schedule.core.ScheduleAlarmReceiver
 import com.riders.thelab.feature.schedule.core.ScheduleAlarmService
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.lang.ref.WeakReference
 import javax.inject.Inject
 
+@HiltViewModel
 class ScheduleViewModel @Inject constructor(
     uiRepository: IUiRepository
 ) : BaseViewModel(uiRepository) {

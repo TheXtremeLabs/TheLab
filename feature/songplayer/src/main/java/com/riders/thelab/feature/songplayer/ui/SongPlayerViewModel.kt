@@ -540,8 +540,6 @@ class SongPlayerViewModel @Inject constructor(
             }
 
         mHandler = null
-
-        context.unregisterReceiver(mMediaButtonReceiver)
     }
 
     override fun onPrepared(mp: MediaPlayer?) {

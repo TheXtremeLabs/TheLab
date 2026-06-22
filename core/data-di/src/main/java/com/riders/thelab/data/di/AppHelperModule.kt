@@ -10,6 +10,7 @@ import com.riders.thelab.core.data.local.dao.ContactDao
 import com.riders.thelab.core.data.local.dao.MusicRecognitionDao
 import com.riders.thelab.core.data.local.dao.UserDao
 import com.riders.thelab.core.data.local.dao.WeatherDao
+import com.riders.thelab.core.data.preferences.IPreferences
 import com.riders.thelab.core.data.preferences.PreferencesImpl
 import com.riders.thelab.core.data.remote.ApiImpl
 import com.riders.thelab.core.data.remote.IApi
@@ -117,15 +118,18 @@ object AppHelperModule {
 
     @Singleton
     @Provides
-    fun providePreferences(@ApplicationContext appContext: Context) =
-        PreferencesImpl(appContext)
+    fun providePreferences(
+        @ApplicationContext appContext: Context
+    ): IPreferences = PreferencesImpl(appContext)
 
 
     @Singleton
     @Provides
-//    @ViewModelScoped // this is new
-    fun provideRepository(dbImpl: DbImpl, apiImpl: ApiImpl, preferencesImpl: PreferencesImpl) =
-        RepositoryImpl(dbImpl, apiImpl, preferencesImpl) as IRepository
+    fun provideRepository(
+        dbImpl: DbImpl,
+        apiImpl: ApiImpl,
+        preferencesImpl: PreferencesImpl
+    ): IRepository = RepositoryImpl(dbImpl, apiImpl, preferencesImpl)
 
 
     //////////////////////////////////////////////////////////////

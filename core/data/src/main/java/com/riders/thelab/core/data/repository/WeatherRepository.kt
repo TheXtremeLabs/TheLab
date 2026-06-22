@@ -16,8 +16,9 @@ import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody
 import retrofit2.Call
 import java.io.File
+import javax.inject.Inject
 
-class WeatherRepository(
+class WeatherRepository @Inject constructor(
     private val db: IDb,
     private val api: IApi
 ) : IWeatherRepository {
