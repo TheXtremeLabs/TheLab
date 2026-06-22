@@ -92,7 +92,7 @@ class WeatherActivity : BaseComponentActivity(), LocationListener {
         super.onResume()
         Timber.d("onResume()")
 
-        registerReceivers(mLabLocationReceiver to LabLocationReceiver.intentFilters)
+        registerReceivers(mLabLocationReceiver to LabLocationReceiver.getIntentFilters())
 
         if (hasLocationPermissions()) {
             registerLabLocationManager()

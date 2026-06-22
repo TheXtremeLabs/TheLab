@@ -83,7 +83,6 @@ class FlightMainActivity : BaseComponentActivity() {
                         .collectAsStateWithLifecycle()
 
                     val hasInternetConnection by mViewModel.hasInternetConnection.collectAsStateWithLifecycle()
-                    val canGetLocation: Boolean by mViewModel.mLabLocationManager.canGetLocationState.collectAsStateWithLifecycle()
                     val locationState by mViewModel.mLabLocationManager.locationState.collectAsStateWithLifecycle()
 
                     val departureAirportsFlow by mViewModel.departureAirportStateFlow.collectAsStateWithLifecycle()
@@ -99,7 +98,7 @@ class FlightMainActivity : BaseComponentActivity() {
                                 theme = theme,
                                 darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
                                 hasConnection = hasInternetConnection,
-                                isLocationEnabled = canGetLocation,
+                                isLocationEnabled = mViewModel.mLabLocationManager.canGetLocation,
                                 searchPageIndex = mViewModel.searchPageIndex,
                                 airportsNearBy = mViewModel.airportsNearBy,
                                 isLoading = mViewModel.isAirportsNearByLoading,

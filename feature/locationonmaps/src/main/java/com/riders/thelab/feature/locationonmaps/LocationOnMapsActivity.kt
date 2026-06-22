@@ -17,7 +17,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.riders.thelab.core.common.utils.LabLocationManager
+import com.riders.thelab.core.common.location.LabLocationManager
+import com.riders.thelab.core.common.location.LocationState
 import com.riders.thelab.core.common.utils.toLocation
 import com.riders.thelab.core.ui.compose.base.BaseComponentActivity
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
@@ -39,10 +40,11 @@ class LocationOnMapsActivity : BaseComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        mLocationManager.setLocationListener(object: LocationListener {
+        mLocationManager.setLocationListener(object : LocationListener {
             override fun onLocationChanged(location: Location) {
             }
         })
+
         getCurrentLocation()
 
         mViewModel.initPlaces()
@@ -65,32 +67,37 @@ class LocationOnMapsActivity : BaseComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            if (null == location) {
-                                LabLoader(modifier = Modifier.size(30.dp))
-                            } else {
-                                LocationOnMapsContent(
-                                    theme = theme, darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
-                                    location = location!!,
-                                    isSearchPlaceVisible = mViewModel.isSearchPlaceVisible,
-                                    uiEvent = { event ->
-                                        when (event) {
-                                            is UiEvent.OnPlaceSelected -> {
-                                                event.place.location?.let {
-                                                    Timber.d("Recomposition | UiEvent.OnPlaceSelected | ${it.latitude}, ${it.longitude}")
-                                                    mLocationManager.updateLocationState((it.latitude to it.longitude).toLocation())
+                            when (location) {
+                                is LocationState.Located -> {
+                                    LocationOnMapsContent(
+                                        theme = theme,
+                                        darkTheme = isDarkTheme ?: isSystemInDarkTheme(),
+                                        location = (location as LocationState.Located).location,
+                                        isSearchPlaceVisible = mViewModel.isSearchPlaceVisible,
+                                        uiEvent = { event ->
+                                            when (event) {
+                                                is UiEvent.OnPlaceSelected -> {
+                                                    event.place.location?.let {
+                                                        Timber.d("Recomposition | UiEvent.OnPlaceSelected | ${it.latitude}, ${it.longitude}")
+                                                        mLocationManager.updateLocationState((it.latitude to it.longitude).toLocation())
+                                                    }
                                                 }
-                                            }
 
-                                            else -> mViewModel.onEvent(event)
+                                                else -> mViewModel.onEvent(event)
+                                            }
+                                        },
+                                        mapUiEvent = { mapEvent ->
+                                            when (mapEvent) {
+                                                is GoogleMapUiEvent.OnMyLocationButtonClick -> getCurrentLocation()
+                                                else -> mViewModel.onGoogleMapEvent(mapEvent)
+                                            }
                                         }
-                                    },
-                                    mapUiEvent = { mapEvent ->
-                                        when (mapEvent) {
-                                            is GoogleMapUiEvent.OnMyLocationButtonClick -> getCurrentLocation()
-                                            else -> mViewModel.onGoogleMapEvent(mapEvent)
-                                        }
-                                    }
-                                )
+                                    )
+                                }
+
+                                else -> {
+                                    LabLoader(modifier = Modifier.size(30.dp))
+                                }
                             }
                         }
                     }

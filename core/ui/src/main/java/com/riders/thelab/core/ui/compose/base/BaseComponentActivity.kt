@@ -133,6 +133,7 @@ abstract class BaseComponentActivity : ComponentActivity() {
 
     fun registerReceivers(vararg receivers: Pair<BroadcastReceiver, IntentFilter>) {
         Timber.d("registerReceivers() | receivers: ${receivers.contentToString()}")
+
         runCatching {
             receivers.forEach {
                 registerReceiver(it.first, it.second)
@@ -143,7 +144,7 @@ abstract class BaseComponentActivity : ComponentActivity() {
                 Timber.e("registerReceivers() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
             }
             .onSuccess {
-                Timber.d("registerReceivers() | onSuccess | ${receivers.joinToString(",") { it::class.java.simpleName }} registered")
+                Timber.i("registerReceivers() | onSuccess | ${receivers.joinToString(",") { it::class.java.simpleName }} registered")
             }
     }
 
@@ -159,7 +160,7 @@ abstract class BaseComponentActivity : ComponentActivity() {
                 Timber.e("unregisterReceivers() | onFailure | error caught with message: ${it.message} (class: ${it.javaClass.canonicalName})")
             }
             .onSuccess {
-                Timber.d("unregisterReceivers() | onSuccess | ${receivers.joinToString(",") { it::class.java.simpleName }} unregistered")
+                Timber.i("unregisterReceivers() | onSuccess | ${receivers.joinToString(",") { it::class.java.simpleName }} unregistered")
             }
     }
 

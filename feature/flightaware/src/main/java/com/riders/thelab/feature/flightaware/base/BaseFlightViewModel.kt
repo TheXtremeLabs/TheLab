@@ -2,8 +2,8 @@ package com.riders.thelab.feature.flightaware.base
 
 import android.app.Activity
 import androidx.lifecycle.viewModelScope
+import com.riders.thelab.core.common.location.LabLocationManager
 import com.riders.thelab.core.common.network.LabNetworkManager
-import com.riders.thelab.core.common.utils.LabLocationManager
 import com.riders.thelab.core.ui.compose.base.BaseViewModel
 import com.riders.thelab.core.ui.data.local.IUiRepository
 import kotlinx.coroutines.flow.SharingStarted

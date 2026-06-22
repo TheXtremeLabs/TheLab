@@ -46,7 +46,7 @@ class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
     ///////////////////////////////////////////
     // Context & ViewModel
     ///////////////////////////////////////////
-    private val mViewModel: SongPlayerViewModel by viewModels()
+    private val mViewModel: SongPlayerViewModel by viewModels<SongPlayerViewModel>()
 
     ///////////////////////////////////////////
     // Service
@@ -144,7 +144,12 @@ class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
     override fun onResume() {
         super.onResume()
         Timber.d("onResume()")
-        registerReceivers()
+        if (null == mMediaButtonReceiver) {
+            mMediaButtonReceiver = MediaButtonReceiver()
+        }
+        registerReceivers(
+            receivers = arrayOf(mMediaButtonReceiver!! to IntentFilter(Intent.ACTION_MEDIA_BUTTON))
+        )
     }
 
     @Deprecated("DEPRECATED - Use registerActivityForResult")
@@ -169,6 +174,7 @@ class SongPlayerActivity : BaseComponentActivity(), MediaSession.Callback {
     override fun onStop() {
         super.onStop()
         Timber.e("onStop()")
+        mMediaButtonReceiver?.let { unregisterReceivers(receivers = arrayOf(it)) }
     }
 
     override fun onDestroy() {

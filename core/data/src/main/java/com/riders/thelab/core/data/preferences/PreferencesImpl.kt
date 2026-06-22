@@ -10,6 +10,7 @@ import com.riders.thelab.core.data.utils.Constants
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.IOException
 import javax.inject.Inject
 
@@ -17,7 +18,7 @@ import javax.inject.Inject
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = Constants.DATASTORE_THE_LAB_FILE_NAME)
 
 class PreferencesImpl @Inject constructor(
-    private val context: Context
+    @ApplicationContext private val context: Context
 ) : IPreferences {
 
     override fun isFirstTimeLaunched(): Flow<Boolean> = context.dataStore.data.catch { exception ->
