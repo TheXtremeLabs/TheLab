@@ -4,7 +4,7 @@ javaVersion = "21"
 
 # Gradle version
 # Android
-androidGradlePlugin = "9.2.0"
+androidGradlePlugin = "9.2.1"
 androidxLintGradlePlugin = "1.0.0-alpha06"
 dependencyGuardGradlePlugin = "0.5.0"
 develocityGradlePlugin = "4.4.0"
