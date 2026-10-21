@@ -1,5 +1,6 @@
 package com.riders.thelab.core.data.local.model.compose.weather
 
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.Stable
 
 @Deprecated("use WeatherDataState instead")
@@ -15,5 +16,6 @@ sealed class WeatherDataState {
     data object Loading : WeatherDataState()
 
     @Stable
+    @Immutable
     data object None : WeatherDataState()
 }

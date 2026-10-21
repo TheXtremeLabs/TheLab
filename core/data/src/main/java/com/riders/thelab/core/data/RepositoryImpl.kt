@@ -42,7 +42,7 @@ import com.riders.thelab.core.data.remote.dto.weather.City
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.data.remote.dto.wikimedia.WikimediaResponse
 import com.riders.thelab.core.data.remote.dto.youtube.VideoDto
-import com.riders.thelab.core.data.utils.Resource
+import com.riders.thelab.core.common.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotools.types.text.NotBlankString
 import kotools.types.text.toNotBlankString
@@ -221,8 +221,8 @@ class RepositoryImpl @Inject constructor(
         }
         .getOrElse { exception ->
             Resource.Error(
-                exception.message!!.toNotBlankString().getOrThrow(),
-                exception
+                message = exception.message ?: "Unknown error",
+                throwable = exception
             )
         }
 

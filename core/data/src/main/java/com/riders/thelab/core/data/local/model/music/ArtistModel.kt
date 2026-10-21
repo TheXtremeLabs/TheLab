@@ -40,6 +40,7 @@ data class ArtistModel(
     @ColumnInfo(name = "description")
     val description: String,
 ) : Serializable {
+
     companion object {
         val mock = ArtistModel(
             1,

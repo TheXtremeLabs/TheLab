@@ -58,7 +58,7 @@ dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:datastore"))
     implementation(project(":core:domain"))
-    implementation(project(":core:testing"))
+    androidTestImplementation(project(":core:testing"))
 
     ///////////////////////////////////
     // General Dependencies
@@ -128,6 +128,11 @@ dependencies {
     /////////////////////////////
     // Tests Dependencies
     /////////////////////////////
+    testImplementation(project(":core:testing"))
+    androidTestImplementation(project(":core:testing"))
+
+    testImplementation(libs.junit4)
+
     androidTestImplementation(libs.androidx.test.runner)
     androidTestImplementation(libs.androidx.test.truth)
     androidTestImplementation(libs.turbine)

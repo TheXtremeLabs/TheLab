@@ -29,7 +29,7 @@ import com.riders.thelab.core.data.remote.dto.tmdb.TMDBVideoResponse
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.data.remote.dto.wikimedia.WikimediaResponse
 import com.riders.thelab.core.data.remote.dto.youtube.VideoDto
-import com.riders.thelab.core.data.utils.Resource
+import com.riders.thelab.core.common.utils.Resource
 import kotlinx.coroutines.flow.Flow
 import kotools.types.text.NotBlankString
 import okhttp3.ResponseBody

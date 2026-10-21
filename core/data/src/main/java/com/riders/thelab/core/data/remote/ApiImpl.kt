@@ -50,7 +50,7 @@ import com.riders.thelab.core.data.remote.dto.tmdb.TMDBVideoResponse
 import com.riders.thelab.core.data.remote.dto.weather.OneCallWeatherResponse
 import com.riders.thelab.core.data.remote.dto.wikimedia.WikimediaResponse
 import com.riders.thelab.core.data.remote.dto.youtube.VideoDto
-import com.riders.thelab.core.data.utils.Resource
+import com.riders.thelab.core.common.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -166,7 +166,7 @@ class ApiImpl @Inject constructor(
 
         return if (null == firebaseUser) {
             Timber.e("getStorageReference() | failed")
-            Resource.Error(message = "Sign in failed".toNotBlankString().getOrThrow())
+            Resource.Error(message = "Sign in failed")
         } else {
             // Sign in success, update UI with the signed-in user's information
             Timber.i("getStorageReference() | success, get firebase instance and fetch bucket")
@@ -181,13 +181,13 @@ class ApiImpl @Inject constructor(
             }
 
             // Create a storage reference from our app
-            storageRef = storage[0]!!.reference.also { ref ->
+            storageRef = storage[0]?.reference?.also { ref ->
                 if (BuildConfig.DEBUG) {
                     Timber.d("getStorageReference() | reference : ${ref.name}")
                 }
             }
 
-            Resource.Success(storageRef)
+            storageRef?.let { Resource.Success(it)}?:  Resource.Error(message = "Sign in failed")
         }
     }
         .onFailure { throwable: Throwable ->
@@ -199,7 +199,7 @@ class ApiImpl @Inject constructor(
         }
         .getOrElse { exception ->
             Resource.Error(
-                message = exception.message!!.toNotBlankString().getOrThrow(),
+                message = exception.message ?: "Unknown error",
                 throwable = exception
             )
         }
