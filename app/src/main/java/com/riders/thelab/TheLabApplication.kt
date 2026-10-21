@@ -30,13 +30,14 @@ import coil3.memory.MemoryCache
 import coil3.request.crossfade
 import coil3.svg.SvgDecoder
 import coil3.util.DebugLogger
-import com.google.firebase.Firebase
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.initialization.InitializationStatus
 import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseOptions
 import com.google.firebase.appcheck.FirebaseAppCheck
 import com.google.firebase.appcheck.playintegrity.PlayIntegrityAppCheckProviderFactory
-import com.google.firebase.crashlytics.crashlytics
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.perf.FirebasePerformance
-import com.google.firebase.perf.performance
 import com.riders.thelab.core.common.utils.LabDeviceManager
 import com.riders.thelab.feature.weather.core.worker.WeatherDownloadWorker
 import com.riders.thelab.feature.weather.core.worker.WeatherWidgetWorker
@@ -108,7 +109,7 @@ class TheLabApplication : MultiDexApplication(),
         mInstance = this
 
         initTimberAndThreeten()
-        initAdsAndFirebase()
+        initFirebase()
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
 
@@ -170,34 +171,54 @@ class TheLabApplication : MultiDexApplication(),
         // AndroidThreeTen.init(this)
     }
 
-    private fun initAdsAndFirebase() {
-        Timber.d("initAdsAndFirebase()")
+    private fun initFirebase() {
+        Timber.d("initFirebase()")
+
+        val options = FirebaseOptions.Builder()
+            .setApplicationId("1:759951804103:android:95407efe1fb24f7292a0e2") // From google-services.json (mobilesdk_app_id)
+            .setApiKey("AIzaSyDt2Vdy_Q90sdrwoiscsSP69JWUgdFUZ6g")       // From google-services.json (current_key)
+            .setProjectId("the-lab-3920e")
+            .build()
+        FirebaseApp.initializeApp(applicationContext, options)
 
         // Firebase Crashlytics
-        FirebaseApp.initializeApp(this@TheLabApplication)
-        Firebase.crashlytics.apply {
+        initFirebaseCrashlytics()
+        initFirebasePerformances()
+
+        //  Gets the instance of the Firebase App Check SDK.
+        //initFirebaseAppCheck()
+
+        // Mobile ADS
+        initFirebaseAds()
+    }
+
+    private fun initFirebaseCrashlytics() {
+        FirebaseCrashlytics.getInstance().apply {
             isCrashlyticsCollectionEnabled = true
             setUserId("wayne")
         }
+    }
 
-        FirebasePerformance.getInstance()
-        Firebase.performance.apply {
+    private fun initFirebasePerformances() {
+        FirebasePerformance.getInstance().apply {
             isPerformanceCollectionEnabled = true
             newTrace("TheLabVision Trace")
         }
+    }
 
-        //  Gets the instance of the Firebase App Check SDK.
+    private fun initFirebaseAds() {
+        MobileAds.initialize(this) { initializationStatus: InitializationStatus ->
+            Timber.d("initializationStatus: $initializationStatus")
+        }
+    }
+
+    private fun initFirebaseAppCheck() {
         val firebaseAppCheck = FirebaseAppCheck.getInstance()
         // Tells App Check to use the Play Integrity provider to obtain tokens.
         firebaseAppCheck.installAppCheckProviderFactory(
             // Gets the Play Integrity App Check provider factory.
             PlayIntegrityAppCheckProviderFactory.getInstance()
         )
-
-        // Mobile ADS
-        /*MobileAds.initialize(this) { initializationStatus: InitializationStatus ->
-            Timber.d("initializationStatus: $initializationStatus")
-        }*/
     }
 
     private fun delayedInit() {

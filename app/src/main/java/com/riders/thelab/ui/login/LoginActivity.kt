@@ -147,7 +147,7 @@ class LoginActivity : BaseGoogleActivity() {
     // CLASS METHODS
     //
     /////////////////////////////////////////////////////
-    private fun initViewModel(){
+    private fun initViewModel() {
         mViewModel.initWeakReference(this@LoginActivity)
         mViewModel.getAppVersion()
     }
@@ -158,8 +158,8 @@ class LoginActivity : BaseGoogleActivity() {
         val signInManager = GoogleSignInManager.getInstance(this@LoginActivity)
 
         // Check if the user is already signed in.
-        if (signInManager.isUserSignedInLegacy()) {
-            signInManager.mLastGoogleAccount?.let {
+        if (signInManager.isUserSignedIn()) {
+            signInManager.getLastSignedInAccount()?.let {
                 UIManager.showToast(
                     this@LoginActivity,
                     "User is already signed in with : ${it.email}"
@@ -169,7 +169,7 @@ class LoginActivity : BaseGoogleActivity() {
         }
 
         // Start the sign-in process.
-        signInManager.signInLegacy()
+        lifecycleScope.launch { signInManager.signIn { account -> } }
     }
 
     override fun onConnected(account: GoogleSignInAccount) {

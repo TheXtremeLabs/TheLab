@@ -54,9 +54,6 @@ android {
         versionCode = ConfigData.versionCode
         versionName = ConfigData.versionName*/
 
-        // Enabling multidex support.
-        multiDexEnabled = true
-
         vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -186,7 +183,7 @@ android {
     /*
     * https://stackoverflow.com/questions/50792428/how-to-access-variant-outputfilename-in-kotlin
     */
-    applicationVariants.all {
+    /*applicationVariants.all {
         val variant = this
         variant.outputs
             .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
@@ -196,9 +193,30 @@ android {
                 log("Application Variants | output", "filename: $printFileName")
                 output.outputFileName = fileName
             }
-    }
+    }*/
 
     namespace = "com.riders.thelab"
+}
+
+androidComponents {
+    onVariants { variant ->
+        variant.outputs.forEach { output ->
+            // Use .get() to resolve the lazy properties in the new Variant API
+            val appId = variant.applicationId.get()
+            val vName = output.versionName.get()
+
+            val printFileName = "${appId}_${vName}_${variant.name}.apk"
+            val fileName = "${appId}_${vName}.apk"
+
+            log("androidComponents.onVariants | Application Variants | output", "filename: $printFileName")
+
+            // In AGP 9.2.1, direct filename modification still requires casting
+            // to the new internal implementation class
+            if (output is com.android.build.api.variant.impl.VariantOutputImpl) {
+                output.outputFileName.set(fileName)
+            }
+        }
+    }
 }
 
 configurations.all {
@@ -250,7 +268,7 @@ dependencies {
     implementation(project(":core:player"))
     //implementation(project(":core:speechtotext"))
     implementation(project(":core:ui"))
-    implementation(project(":core:testing"))
+    androidTestImplementation(project(":core:testing"))
 
     implementation(project(":feature:home"))
 
@@ -372,6 +390,7 @@ dependencies {
     implementation(libs.firebase.appcheck)
     implementation(libs.firebase.appcheck.debug)
     implementation(libs.firebase.appcheck.playintegrity)
+    implementation(libs.firebase.ads)
 
     /* Retrofit using RxJava3, Okhttp, Okhttp logging interceptor, Moshi  */
     // Retrofit: provided by data module

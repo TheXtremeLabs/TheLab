@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
@@ -17,15 +15,10 @@ import timber.log.Timber
 
 class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
 
-    companion object {
-        private const val RC_GET_TOKEN = 9002
-    }
-
     private lateinit var viewBinding: ActivityGoogleSignInBinding
 
 
-    private var mGoogleSignInClient: GoogleSignInClient? = null
-
+    //private var mGoogleSignInClient: GoogleSignInClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,15 +49,15 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
         // [END configure_signin]
 
         // Build GoogleAPIClient with the Google Sign-In API and the above options.
-        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+        //mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
     }
 
     private fun getIdToken() {
         // Show an account picker to let the user choose a Google account from the device.
         // If the GoogleSignInOptions only asks for IDToken and/or profile and/or email then no
         // consent screen will be shown here.
-        val signInIntent: Intent = mGoogleSignInClient?.signInIntent!!
-        startActivityForResult(signInIntent, RC_GET_TOKEN)
+        //val signInIntent: Intent = mGoogleSignInClient?.signInIntent!!
+        //startActivityForResult(signInIntent, RC_GET_TOKEN)
     }
 
     private fun refreshIdToken() {
@@ -74,10 +67,10 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
         // If the user has not previously signed in on this device or the sign-in has expired,
         // this asynchronous branch will attempt to sign in the user silently and get a valid
         // ID token. Cross-device single sign on will occur in this branch.
-        mGoogleSignInClient?.silentSignIn()
-            ?.addOnCompleteListener(this) { completedTask: Task<GoogleSignInAccount> ->
-                handleSignInResult(completedTask)
-            }
+        //mGoogleSignInClient?.silentSignIn()
+        //  ?.addOnCompleteListener(this) { completedTask: Task<GoogleSignInAccount> ->
+        //      handleSignInResult(completedTask)
+        //  }
     }
 
     // [START handle_sign_in_result]
@@ -98,15 +91,11 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
 
 
     private fun signOut() {
-        mGoogleSignInClient?.signOut()?.addOnCompleteListener(
-            this
-        ) { updateUI(null) }
+        //mGoogleSignInClient?.signOut()?.addOnCompleteListener(this) { updateUI(null) }
     }
 
     private fun revokeAccess() {
-        mGoogleSignInClient?.revokeAccess()?.addOnCompleteListener(
-            this
-        ) { updateUI(null) }
+        //mGoogleSignInClient?.revokeAccess()?.addOnCompleteListener(this) { updateUI(null) }
     }
 
     @Deprecated("DEPRECATED - Use registerActivityForResult")
@@ -116,8 +105,8 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
             // [START get_id_token]
             // This task is always completed immediately, there is no need to attach an
             // asynchronous listener.
-            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
-            handleSignInResult(task)
+            //  val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
+            // handleSignInResult(task)
             // [END get_id_token]
         }
     }
@@ -165,4 +154,10 @@ class GoogleSignInActivity : AppCompatActivity(), View.OnClickListener {
             }
         }
     }
+
+
+    companion object {
+        private const val RC_GET_TOKEN = 9002
+    }
+
 }

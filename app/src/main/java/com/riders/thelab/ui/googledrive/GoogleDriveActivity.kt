@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.GoogleAuthException
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -18,7 +16,6 @@ import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInsta
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential
 import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException
 import com.google.api.client.http.HttpRequestInitializer
 import com.google.api.client.http.javanet.NetHttpTransport
@@ -49,8 +46,8 @@ class GoogleDriveActivity
 
     private val binding get() = _viewBinding!!
 
-    private var mGoogleApiClient: GoogleApiClient? = null
-    private var mGoogleSignInClient: GoogleSignInClient? = null
+    //private var mGoogleApiClient: GoogleApiClient? = null
+    //private var mGoogleSignInClient: GoogleSignInClient? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,8 +103,7 @@ class GoogleDriveActivity
 
         // disconnect Google Android Drive API connection.
         //mGoogleApiClient.disconnect();
-        signOut()
-
+        //signOut()
     }
 
     override fun onDestroy() {
@@ -139,8 +135,9 @@ class GoogleDriveActivity
 
     private fun isUserSignedIn(): Boolean {
         Timber.i("isUserSignedIn()")
-        val account = GoogleSignIn.getLastSignedInAccount(this)
-        return account != null
+        // val account = GoogleSignIn.getLastSignedInAccount(this)
+        // return account != null
+        return false
     }
 
     private fun googleSignIn() {
@@ -159,7 +156,7 @@ class GoogleDriveActivity
                 //.requestScopes(Scope(DriveScopes.DRIVE_METADATA_READONLY))
                 .build()
 
-            mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+            /*mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
 
             // From the GoogleSignInClient object we can get the signInIntent
             // which we can use in startActivityForResult to trigger the login flow
@@ -167,24 +164,24 @@ class GoogleDriveActivity
 
             if (null != signInIntent) {
                 startActivityForResult(signInIntent, CONST_SIGN_IN)
-            }
+            }*/
         }
     }
 
-    private fun signOut() {
+    /*private fun signOut() {
         mGoogleSignInClient
             ?.signOut()
             ?.addOnCompleteListener(this) {
                 Toast.makeText(this@GoogleDriveActivity, "Signed Out", Toast.LENGTH_SHORT)
                     .show()
             }
-    }
+    }*/
 
     private fun handleSignData(data: Intent?) {
         Timber.i("handleSignData()")
         // The Task returned from this call is always completed, no need to attach
         // a listener.
-        GoogleSignIn.getSignedInAccountFromIntent(data)
+        /*GoogleSignIn.getSignedInAccountFromIntent(data)
             .addOnSuccessListener {
                 Timber.d("addOnSuccessListener()")
                 Timber.e("authentication succeed - $it")
@@ -207,12 +204,12 @@ class GoogleDriveActivity
                     // authentication failed
                     Timber.e("authentication failed - exception : ${it.exception}")
                 }
-            }
+            }*/
     }
 
     private fun checkLastSignedInAccount(): Drive? {
         Timber.i("checkLastSignedInAccount()")
-        GoogleSignIn.getLastSignedInAccount(this)?.let { googleAccount ->
+        /*GoogleSignIn.getLastSignedInAccount(this)?.let { googleAccount ->
             Timber.d("connected account - mail : ${googleAccount.email}")
 
             // Now we need to create a GoogleAccountCredential to authenticate the signed-in account
@@ -232,16 +229,16 @@ class GoogleDriveActivity
             // we need to create the Drive service instance via its builder
             // where need to pass AndroidHttp, JacksonFactory,
             // and GoogleAccountCredential as parameters
-            /*return Drive
+            *//*return Drive
                 .Builder(
                     NetHttpTransport.Builder().build(),
                     JacksonFactory.getDefaultInstance(),
                     credential
                 )
                 .setApplicationName(getString(R.string.app_name))
-                .build()*/
+                .build()*//*
 
-        }
+        }*/
 
         return null
     }

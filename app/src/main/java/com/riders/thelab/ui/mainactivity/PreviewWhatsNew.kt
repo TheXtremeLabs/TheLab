@@ -30,6 +30,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,7 +49,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.palette.graphics.Palette
 import com.riders.thelab.R
 import com.riders.thelab.core.data.local.model.app.App
@@ -59,7 +61,7 @@ import com.riders.thelab.core.ui.compose.previewprovider.AppThemePreviewProvider
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.findActivity
 import com.riders.thelab.core.ui.utils.UIManager
-import com.riders.thelab.utils.AppBuilderUtils
+import com.riders.thelab.feature.home.rememberAppBuilderUtils
 
 ///////////////////////////////
 //
@@ -396,8 +398,8 @@ private fun PreviewWhatsNewTopContent(@PreviewParameter(AppThemePreviewProvider:
 @DevicePreviews
 @Composable
 private fun PreviewWhatsNew(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
-    val context = LocalContext.current
-    val appItem = AppBuilderUtils.buildActivities(context)[0]
+    val appBuilder = rememberAppBuilderUtils()
+    val appItem = remember { appBuilder.getMobileActivities()[0] }
 
     TheLabTheme(theme = appTheme) {
         WhatsNew(theme = appTheme, darkTheme = isSystemInDarkTheme(), item = appItem)
@@ -407,8 +409,8 @@ private fun PreviewWhatsNew(@PreviewParameter(AppThemePreviewProvider::class) ap
 @DevicePreviews
 @Composable
 private fun PreviewWhatsNewForPager(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
-    val context = LocalContext.current
-    val appItem = AppBuilderUtils.buildActivities(context)[12]
+    val appBuilder = rememberAppBuilderUtils()
+    val appItem by remember { mutableStateOf(appBuilder.getMobileActivities()[12]) }
     TheLabTheme(theme = appTheme) {
         WhatsNew(theme = appTheme, darkTheme = isSystemInDarkTheme(), appItem, 2f)
     }
@@ -418,8 +420,15 @@ private fun PreviewWhatsNewForPager(@PreviewParameter(AppThemePreviewProvider::c
 @Composable
 private fun PreviewWhatsNewList(@PreviewParameter(AppThemePreviewProvider::class) appTheme: AppTheme) {
     val context = LocalContext.current
-    val viewModel: MainActivityViewModel = hiltViewModel()
-    val appList = AppBuilderUtils.buildActivities(context).take(3).let {
+    val viewModel: MainActivityViewModel =
+        androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel<MainActivityViewModel>(
+            viewModelStoreOwner = checkNotNull(LocalViewModelStoreOwner.current) {
+                "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+            },
+            key = null
+        )
+    val appBuilder = rememberAppBuilderUtils()
+    val appList = appBuilder.getMobileActivities().take(3).let {
         it.map { localApp ->
 
             val bitmap: Bitmap? = when (localApp.appDrawableIcon) {
