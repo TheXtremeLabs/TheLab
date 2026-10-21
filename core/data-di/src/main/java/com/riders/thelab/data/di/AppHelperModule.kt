@@ -25,7 +25,11 @@ import com.riders.thelab.core.data.remote.api.WeatherApiService
 import com.riders.thelab.core.data.remote.api.WeatherBulkApiService
 import com.riders.thelab.core.data.remote.api.WikimediaApiService
 import com.riders.thelab.core.data.remote.api.YoutubeApiService
+import com.riders.thelab.core.data.repository.ArtistsRepository
+import com.riders.thelab.core.data.repository.FirebaseRepository
 import com.riders.thelab.core.data.repository.WeatherRepository
+import com.riders.thelab.core.domain.repository.IArtistsRepository
+import com.riders.thelab.core.domain.repository.IFirebaseRepository
 import com.riders.thelab.core.domain.repository.IWeatherRepository
 import dagger.Module
 import dagger.Provides
@@ -131,6 +135,25 @@ object AppHelperModule {
         preferencesImpl: PreferencesImpl
     ): IRepository = RepositoryImpl(dbImpl, apiImpl, preferencesImpl)
 
+    //////////////////////////////////////////////////////////////
+    // --- Artist
+    //////////////////////////////////////////////////////////////
+    @Provides
+    @Singleton
+    fun provideArtistRepository(
+        db: IDb,
+        api: IApi
+    ): IArtistsRepository = ArtistsRepository(db = db, api = api)
+
+    //////////////////////////////////////////////////////////////
+    // --- Firebase
+    //////////////////////////////////////////////////////////////
+    @Provides
+    @Singleton
+    fun provideFirebaseRepository(
+        @ApplicationContext context: Context,
+        api: IApi
+    ): IFirebaseRepository = FirebaseRepository(context, api)
 
     //////////////////////////////////////////////////////////////
     // --- Weather
