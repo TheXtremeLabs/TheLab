@@ -2,6 +2,7 @@ import com.android.build.api.dsl.LibraryExtension
 import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.riders.thelab.configureKotlinAndroid
 import com.riders.thelab.configurePrintApksTask
+import com.riders.thelab.jdkVersion
 import com.riders.thelab.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -15,12 +16,11 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply(libs.findPlugin("android-library").get().get().pluginId)
-                apply(libs.findPlugin("kotlin-android").get().get().pluginId)
             }
 
             // Configure Jvm ToolChain
             with(kotlinExtension) {
-                jvmToolchain(21)
+                jvmToolchain(jdkVersion)
             }
 
             extensions.configure<LibraryExtension> {
@@ -40,6 +40,7 @@ class AndroidLibraryConventionPlugin : Plugin<Project> {
                     force("org.objenesis:objenesis:2.6")
                 }
             }
+
             dependencies {
                 add("androidTestImplementation", kotlin("test"))
                 add("testImplementation", kotlin("test"))

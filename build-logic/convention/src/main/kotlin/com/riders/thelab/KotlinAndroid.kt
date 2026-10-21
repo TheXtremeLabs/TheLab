@@ -30,20 +30,20 @@ internal fun Project.configureKotlinCommons(commonExtension: CommonExtension) {
     logger.lifecycle("\uD83D\uDD53 Configuring kotlin commons....")
 
     commonExtension.apply {
-        this@apply.compileSdk {
-            version = release(AndroidConfiguration.Sdk.COMPILATION) { minorApiLevel = 1 }
+        compileSdk {
+            version = release(AndroidConfiguration.Sdk.COMPILATION)
         }
-        this@apply.ndkVersion = AndroidConfiguration.ndk.toString()
+        ndkVersion = AndroidConfiguration.ndk.toString()
 
-        this@apply.defaultConfig.minSdk = AndroidConfiguration.Sdk.MIN
+        defaultConfig.minSdk = AndroidConfiguration.Sdk.MIN
 
-        this@apply.compileOptions.apply {
+        compileOptions.apply {
             sourceCompatibility = this@configureKotlinCommons.javaVersion
             targetCompatibility = this@configureKotlinCommons.javaVersion
 
             isCoreLibraryDesugaringEnabled = true
         }
-        this@apply.buildFeatures.apply {
+        buildFeatures.apply {
             buildConfig = true
             viewBinding = true
         }
@@ -78,6 +78,24 @@ internal fun Project.configureKotlinCommons(commonExtension: CommonExtension) {
 
         // Timber
         add("implementation", libs.findLibrary("timber").get())
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            eachDependency {
+                if ("com.google.protobuf" == requested.group &&
+                    (requested.name == "protobuf-lite" || requested.name == "protobuf-java")
+                ) {
+                    useTarget(
+                        "com.google.protobuf:protobuf-javalite:${
+                            libs.findVersion("protobuf").get()
+                        }"
+                    )
+                }
+            }
+        }
+        exclude(mapOf("group" to "com.google.protobuf", "module" to "protobuf-lite"))
+        exclude(mapOf("group" to "com.google.protobuf", "module" to "protobuf-java"))
     }
 }
 

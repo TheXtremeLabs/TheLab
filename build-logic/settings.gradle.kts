@@ -21,10 +21,9 @@ dependencyResolutionManagement {
         maven { url = uri("https://jitpack.io") }
         maven { url = uri("https://maven.google.com") }
         maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
-        maven {
+        /*maven {
             url = uri("http://files.couchbase.com/maven2/")
-            isAllowInsecureProtocol = true
-        }
+        }*/
 
         // Ktor
         maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev") }

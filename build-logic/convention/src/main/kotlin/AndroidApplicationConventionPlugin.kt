@@ -15,7 +15,6 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
         with(target) {
             with(pluginManager) {
                 apply(libs.findPlugin("android-application").get().get().pluginId)
-                apply(libs.findPlugin("kotlin-android").get().get().pluginId)
                 apply(libs.findPlugin("kotlin-serialization").get().get().pluginId)
                 apply(libs.findPlugin("ksp").get().get().pluginId)
             }
@@ -37,7 +36,29 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
                 configureFlavors(applicationExtension = this)
             }
+
             extensions.configure<ApplicationAndroidComponentsExtension> {
+                onVariants { variant ->
+                    variant.outputs.forEach { output ->
+                        // Use .get() to resolve the lazy properties in the new Variant API
+                        val appId = variant.applicationId.get()
+                        val vName = output.versionName.get()
+
+                        val printFileName = "${appId}_${vName}_${variant.name}.apk"
+                        val fileName = "${appId}_${vName}.apk"
+
+                        logger.lifecycle(
+                            "androidComponents.onVariants | Application Variants | output filename: $printFileName"
+                        )
+
+                        // In AGP 9.2.1, direct filename modification still requires casting
+                        // to the new internal implementation class
+                        if (output is com.android.build.api.variant.impl.VariantOutputImpl) {
+                            output.outputFileName.set(fileName)
+                        }
+                    }
+                }
+
                 configurePrintApksTask(this)
             }
 

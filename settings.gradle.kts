@@ -33,10 +33,9 @@ pluginManagement {
         // Ktor
         maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev") }
         maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
-        maven {
+        /*maven {
             url = uri("http://files.couchbase.com/maven2/")
-            isAllowInsecureProtocol = true
-        }
+        }*/
         // Kotlin plugin org
         maven { url = uri("https://plugins.gradle.org/m2/") }
         // Android Build Server
@@ -47,7 +46,7 @@ pluginManagement {
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
     // Develocity
-    id("com.gradle.develocity") version "4.4.0"
+    id("com.gradle.develocity") version "4.6.0"
 }
 
 dependencyResolutionManagement {
@@ -77,10 +76,9 @@ dependencyResolutionManagement {
         // Ktor
         maven { url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev") }
         maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
-        maven {
+        /*maven {
             url = uri("http://files.couchbase.com/maven2/")
-            isAllowInsecureProtocol = true
-        }
+        }*/
         // Kotlin plugin org
         maven { url = uri("https://plugins.gradle.org/m2/") }
         // Android Build Server
