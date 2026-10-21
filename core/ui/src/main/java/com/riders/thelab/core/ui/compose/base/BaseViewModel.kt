@@ -206,3 +206,7 @@ open class BaseViewModel(val uiRepository: IUiRepository) : ViewModel() {
         }
     }
 }
+
+inline fun <State> MutableStateFlow<State>.updateState(crossinline transform: State.() -> State) {
+    this.update { currentState -> currentState.transform() }
+}
