@@ -68,15 +68,16 @@ import androidx.navigation.compose.rememberNavController
 import androidx.palette.graphics.Palette
 import coil3.compose.AsyncImagePainter
 import coil3.size.Scale
-import com.riders.thelab.core.data.local.model.music.ArtistModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.core.ui.compose.utils.loadImage
+import com.riders.thelab.feature.artists.data.local.model.ArtistUi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 
 
 ///////////////////////////////////////
@@ -176,7 +177,7 @@ fun ArtistDetailScreen(
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier,
-    artist: ArtistModel,
+    artist: ArtistUi,
     index: Int,
     onBackClick: () -> Unit
 ) {
@@ -228,7 +229,7 @@ fun ArtistDetailScreen(
                             theme = theme, darkTheme = darkTheme,
                             sharedTransitionScope = sharedTransitionScope,
                             animatedVisibilityScope = animatedVisibilityScope,
-                            urlThumb = /*artist.encodedThumbnail ?:*/ artist.urlThumbnail,
+                            urlThumb = /*artist.encodedThumbnail ?:*/ artist.urlThumb,
                             index = index,
                             boundsTransform = boundsTransform
                         ) { fetchedPalette ->
@@ -301,7 +302,7 @@ fun ArtistDetailScreen(
                                     boundsTransform = boundsTransform
                                 )
                                 .skipToLookaheadSize(),
-                            text = artist.sceneName,
+                            text = artist.artistName,
                             style = TextStyle(
                                 fontWeight = FontWeight.W600,
                                 fontSize = 18.sp,
@@ -352,7 +353,7 @@ fun ArtistDetailScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(start = 16.dp, end = 16.dp, bottom = 64.dp),
-                            text = artist.description,
+                            text = artist.description.toString(),
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -379,10 +380,10 @@ fun ArtistDetailScreen(
     }
 
     LaunchedEffect(Unit) {
-        delay(750L)
+        delay(750.milliseconds)
         animateDescription = true
 
-        delay(500L)
+        delay(500.milliseconds)
         animateGoBack = true
     }
 }
@@ -396,7 +397,7 @@ fun ArtistDetailScreen(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @DevicePreviews
 @Composable
-private fun PreviewYoutubeDetailScreen(@PreviewParameter(PreviewProviderArtist::class) artist: ArtistModel) {
+private fun PreviewYoutubeDetailScreen(@PreviewParameter(PreviewProviderArtist::class) artist: ArtistUi) {
     val navController = rememberNavController()
     TheLabTheme(theme = AppTheme.Default) {
         SharedTransitionLayout(modifier = Modifier.fillMaxSize()) {

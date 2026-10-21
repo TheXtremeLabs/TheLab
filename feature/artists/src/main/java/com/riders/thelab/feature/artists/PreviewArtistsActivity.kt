@@ -25,8 +25,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.riders.thelab.core.data.local.model.compose.artists.ArtistsUiState
-import com.riders.thelab.core.data.local.model.music.ArtistModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.NoItemFound
 import com.riders.thelab.core.ui.compose.component.loading.LabLoader
@@ -34,6 +32,8 @@ import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.artists.data.local.compose.ArtistUiState
+import com.riders.thelab.feature.artists.data.local.model.ArtistUi
 import timber.log.Timber
 
 
@@ -47,7 +47,7 @@ import timber.log.Timber
 fun ArtistsContentSuccess(
     theme: AppTheme,
     darkTheme: Boolean,
-    artists: List<ArtistModel>,
+    artists: List<ArtistUi>,
     uiEvent: (UiEvent) -> Unit
 ) {
     val navController = rememberNavController()
@@ -69,7 +69,9 @@ fun ArtistsContentSuccess(
                     uiEvent = { event ->
                         when (event) {
                             is UiEvent.OnArtistClicked -> {
-                                navController.navigate(ArtistScreen.Detail(event.artist.id.toInt()))
+                                event.artist.index?.let {
+                                    navController.navigate(ArtistScreen.Detail(it.toInt()))
+                                }
                             }
 
                             else -> uiEvent.invoke(event)
@@ -113,14 +115,14 @@ fun ArtistsContentSuccess(
 fun ArtistsContent(
     theme: AppTheme,
     darkTheme: Boolean,
-    state: ArtistsUiState,
+    state: ArtistUiState,
     uiEvent: (UiEvent) -> Unit
 ) {
     TheLabTheme(theme = theme, darkTheme = darkTheme) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
             topBar = {
-                AnimatedVisibility(visible = state !is ArtistsUiState.Success) {
+                AnimatedVisibility(visible = state !is ArtistUiState.Success) {
                     TheLabTopAppBar(
                         theme = theme,
                         toolbarSize = ToolbarSize.SMALL,
@@ -140,7 +142,7 @@ fun ArtistsContent(
                 label = "artists_animated_content"
             ) { targetState ->
                 when (targetState) {
-                    is ArtistsUiState.Loading -> {
+                    is ArtistUiState.Loading -> {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.spacedBy(
@@ -153,7 +155,7 @@ fun ArtistsContent(
                         }
                     }
 
-                    is ArtistsUiState.Error -> {
+                    is ArtistUiState.Error -> {
                         NoItemFound(
                             theme = theme,
                             darkTheme = darkTheme,
@@ -161,7 +163,7 @@ fun ArtistsContent(
                         )
                     }
 
-                    is ArtistsUiState.Success -> {
+                    is ArtistUiState.Success -> {
                         ArtistsContentSuccess(
                             theme = theme,
                             darkTheme = darkTheme,
@@ -182,7 +184,7 @@ fun ArtistsContent(
 ///////////////////////////////////////
 @DevicePreviews
 @Composable
-private fun PreviewArtistsContentSuccess(@PreviewParameter(PreviewProviderArtists::class) artists: List<ArtistModel>) {
+private fun PreviewArtistsContentSuccess(@PreviewParameter(PreviewProviderArtists::class) artists: List<ArtistUi>) {
     TheLabTheme(theme = AppTheme.Default) {
         ArtistsContentSuccess(
             theme = AppTheme.Default,
@@ -194,7 +196,7 @@ private fun PreviewArtistsContentSuccess(@PreviewParameter(PreviewProviderArtist
 
 @DevicePreviews
 @Composable
-fun PreviewArtistsContent(@PreviewParameter(PreviewProviderArtistUiState::class) state: ArtistsUiState) {
+fun PreviewArtistsContent(@PreviewParameter(PreviewProviderArtistUiState::class) state: ArtistUiState) {
     TheLabTheme(theme = AppTheme.Default) {
         ArtistsContent(theme = AppTheme.Default, darkTheme = isSystemInDarkTheme(), state) {}
     }

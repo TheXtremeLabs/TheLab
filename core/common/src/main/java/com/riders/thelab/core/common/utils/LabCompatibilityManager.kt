@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Build.VERSION_CODES
+import androidx.annotation.ChecksSdkIntAtLeast
+import androidx.annotation.RequiresApi
 import com.riders.thelab.core.common.bean.AndroidReleases
 import timber.log.Timber
 import java.lang.reflect.Field
@@ -24,125 +26,126 @@ object LabCompatibilityManager {
     /**
      * Determine if the device is running API level 8 or higher.
      */
-    fun isFroyo(): Boolean {
-        return getSdkVersion() >= VERSION_CODES.FROYO
-    }
+    fun isFroyo(): Boolean = getSdkVersion() >= VERSION_CODES.FROYO
+
 
     /**
      * Determine if the device is running API level 11 or higher.
      */
-    private fun isHoneycomb(): Boolean {
-        return getSdkVersion() >= VERSION_CODES.HONEYCOMB
-    }
+    private fun isHoneycomb(): Boolean = getSdkVersion() >= VERSION_CODES.HONEYCOMB
+
 
     /**
      * Determine if the device is running API level 19 or higher.
      */
-    fun isKitkat(): Boolean {
-        return getSdkVersion() >= VERSION_CODES.KITKAT
-    }
+    fun isKitkat(): Boolean = getSdkVersion() >= VERSION_CODES.KITKAT
+
 
     /**
      * Determine if the device is running API level 21 or higher.
      */
-    fun isLollipop(): Boolean {
-        return getSdkVersion() >= VERSION_CODES.LOLLIPOP
-    }
+    fun isLollipop(): Boolean = getSdkVersion() >= VERSION_CODES.LOLLIPOP
+
 
     /**
      * Determine if the device is running API level is higher than 21.
      */
-    fun isLollipopPlus(): Boolean {
-        return getSdkVersion() > VERSION_CODES.LOLLIPOP
-    }
+    fun isLollipopPlus(): Boolean = getSdkVersion() > VERSION_CODES.LOLLIPOP
+
 
     /**
      * Determine if the device is running API level 23 or higher.
      */
-    fun isMarshmallow(): Boolean {
-        return getSdkVersion() >= VERSION_CODES.M
-    }
+    fun isMarshmallow(): Boolean = getSdkVersion() >= VERSION_CODES.M
 
     /**
      * Determine if the device is running API level 24 or higher.
      */
-    fun isNougat(): Boolean {
-        return getSdkVersion() >= VERSION_CODES.N
-    }
+    fun isNougat(): Boolean = getSdkVersion() >= VERSION_CODES.N
 
     /**
      * Determine if the device is running API level 26 or higher.
      */
-    fun isOreo(): Boolean {
-        return getSdkVersion() >= VERSION_CODES.O
-    }
+    @ChecksSdkIntAtLeast(api = VERSION_CODES.O)
+    @RequiresApi(VERSION_CODES.O)
+    fun isOreo(): Boolean = getSdkVersion() >= VERSION_CODES.O
 
     /**
      * Determine if the device is running API level 28 or higher.
      */
-    fun isPie(): Boolean {
-        return getSdkVersion() >= VERSION_CODES.P
-    }
+    @ChecksSdkIntAtLeast(api = VERSION_CODES.P)
+    @RequiresApi(VERSION_CODES.P)
+    fun isPie(): Boolean = getSdkVersion() >= VERSION_CODES.P
 
 
     /**
      * Determine if the device is running API level 29 or higher.
      * Quince Tart
      */
-    fun isAndroid10(): Boolean {
-        return getSdkVersion() >= VERSION_CODES.Q
-    }
+    @ChecksSdkIntAtLeast(api = VERSION_CODES.Q)
+    @RequiresApi(VERSION_CODES.Q)
+    fun isAndroid10(): Boolean = getSdkVersion() >= VERSION_CODES.Q
 
 
     /**
      * Determine if the device is running API level 30 or higher.
      * Red Velvet Cake
      */
-    fun isR(): Boolean {
-        return getSdkVersion() >= VERSION_CODES.R
-    }
+    @ChecksSdkIntAtLeast(api = VERSION_CODES.R)
+    @RequiresApi(VERSION_CODES.R)
+    fun isR(): Boolean = getSdkVersion() >= VERSION_CODES.R
 
 
     /**
      * Determine if the device is running API level 31 or higher.
      * Snow Cone
      */
-    fun isS(): Boolean {
-        return getSdkVersion() >= VERSION_CODES.S
-    }
+    @ChecksSdkIntAtLeast(api = VERSION_CODES.S)
+    @RequiresApi(VERSION_CODES.S)
+    fun isS(): Boolean = getSdkVersion() >= VERSION_CODES.S
 
 
     /**
      * Determine if the device is running API level 33 or higher.
      * Tiramisu
      */
-    fun isTiramisu(): Boolean {
-        return getSdkVersion() >= VERSION_CODES.TIRAMISU
-    }
+    @ChecksSdkIntAtLeast(api = VERSION_CODES.TIRAMISU)
+    @RequiresApi(VERSION_CODES.TIRAMISU)
+    fun isTiramisu(): Boolean = getSdkVersion() >= VERSION_CODES.TIRAMISU
+
 
     /**
      * Determine if the device is running API level 34 or higher.
      * Upside Down Cake
      */
-    fun isUpsideDownCake(): Boolean {
-        return getSdkVersion() >= VERSION_CODES.UPSIDE_DOWN_CAKE
-    }
+    @ChecksSdkIntAtLeast(api = VERSION_CODES.UPSIDE_DOWN_CAKE)
+    @RequiresApi(VERSION_CODES.UPSIDE_DOWN_CAKE)
+    fun isUpsideDownCake(): Boolean = getSdkVersion() >= VERSION_CODES.UPSIDE_DOWN_CAKE
+
 
     /**
      * Determine if the device is running API level 35 or higher.
      * Upside Down Cake
      */
-    fun isVanillaIceCream(): Boolean {
-        return getSdkVersion() >= 35
-    }
+    @ChecksSdkIntAtLeast(api = VERSION_CODES.VANILLA_ICE_CREAM)
+    @RequiresApi(VERSION_CODES.VANILLA_ICE_CREAM)
+    fun isVanillaIceCream(): Boolean = getSdkVersion() >= 35
+
 
     /**
      * Determine if the device is running API level 36 or higher.
      * Baklava
      */
-    fun isBaklava(): Boolean {
-        return getSdkVersion() >= 36
-    }
+    @ChecksSdkIntAtLeast(api = VERSION_CODES.BAKLAVA)
+    @RequiresApi(VERSION_CODES.BAKLAVA)
+    fun isBaklava(): Boolean = getSdkVersion() >= VERSION_CODES.BAKLAVA
+
+
+    /**
+     * Determine if the device is running API level 37 or higher.
+     * Cinnamon Bun
+     */
+    fun isCinnamonBun(): Boolean = getSdkVersion() >= 37
 
 
     /**
@@ -252,9 +255,11 @@ object LabCompatibilityManager {
  * 29                  Q                         Android 10
  * 30                  R                         Android 11
  * 31                  S                         Android 12 Snow cone
- * 32                  Sv2                         Android 12 Snow cone v2
+ * 32                  Sv2                       Android 12 Snow cone v2
  * 33                  T                         Android 13 Tiramisu
  * 34                  U                         Android 14 Upside Down Cake
  * 35                  V                         Android 15 Vanilla Ice Cream
+ * 36                  Baklava                   Android 16 Baklava
+ * 37                  Cinnamon Bun              Android 17 Cinnamon Bun
  * 10000                CUR_DEVELOPMENT           Current Development Version
  */

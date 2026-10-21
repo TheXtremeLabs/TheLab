@@ -32,7 +32,7 @@ fun ResponseBody.saveFileAsFlow(context: Context, destinationPath: String): Flow
         }
 
         FileManager.getInstance(context).apply {
-            getOrCreateFolder(destinationFile.parent.toString())
+            destinationFile.parent?.let { getOrCreateFolder(it) }
             getOrCreateFile(destinationPath)
         }
 

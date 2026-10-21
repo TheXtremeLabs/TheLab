@@ -128,7 +128,7 @@ class LabPackageManager private constructor(private val applicationContext: Cont
 
         @Synchronized
         fun getInstance(context: Context) = INSTANCE ?: synchronized(this) {
-            INSTANCE ?: LabPackageManager(context).also { INSTANCE = it }
+            INSTANCE ?: LabPackageManager(context.applicationContext).also { INSTANCE = it }
         }
     }
 }

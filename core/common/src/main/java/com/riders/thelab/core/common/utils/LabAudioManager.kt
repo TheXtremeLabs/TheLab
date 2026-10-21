@@ -23,8 +23,9 @@ object LabAudioManager {
     private const val AUDIO_FORMAT: Int = AudioFormat.ENCODING_PCM_16BIT
     private const val AGC_OFF: Int = MediaRecorder.AudioSource.VOICE_RECOGNITION
 
+    @SuppressLint("NewApi")
     private val audioEncoding =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) AudioFormat.ENCODING_PCM_32BIT else AudioFormat.ENCODING_PCM_16BIT
+        if (LabCompatibilityManager.isS()) AudioFormat.ENCODING_PCM_32BIT else AudioFormat.ENCODING_PCM_16BIT
 
     private var minBytes: Int = 0
 

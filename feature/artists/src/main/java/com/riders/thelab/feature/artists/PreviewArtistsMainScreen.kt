@@ -30,13 +30,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.riders.thelab.core.data.local.model.music.ArtistModel
 import com.riders.thelab.core.ui.R
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.component.toolbar.TheLabTopAppBar
 import com.riders.thelab.core.ui.compose.component.toolbar.ToolbarSize
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
+import com.riders.thelab.feature.artists.data.local.model.ArtistUi
 
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -47,7 +47,7 @@ fun ArtistMainScreen(
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
     modifier: Modifier = Modifier,
-    artists: List<ArtistModel>,
+    artists: List<ArtistUi>,
     uiEvent: (UiEvent) -> Unit
 ) {
     val lazyGridState = rememberLazyGridState()
@@ -114,7 +114,7 @@ fun ArtistMainScreen(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @DevicePreviews
 @Composable
-private fun PreviewArtistMainScreen(@PreviewParameter(PreviewProviderArtists::class) artists: List<ArtistModel>) {
+private fun PreviewArtistMainScreen(@PreviewParameter(PreviewProviderArtists::class) artists: List<ArtistUi>) {
     val navController = rememberNavController()
 
     TheLabTheme(theme = AppTheme.Default) {

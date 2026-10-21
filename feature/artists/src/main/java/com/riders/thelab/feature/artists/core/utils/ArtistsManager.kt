@@ -1,13 +1,12 @@
-package com.riders.thelab.feature.artists
+package com.riders.thelab.feature.artists.core.utils
 
 import android.annotation.SuppressLint
 import android.net.Uri
 import com.google.firebase.storage.StorageReference
+import com.riders.thelab.core.common.extensions.getTaskFlow
 import com.riders.thelab.core.common.utils.LabCompatibilityManager
-import com.riders.thelab.core.data.local.model.music.ArtistModel
-import com.riders.thelab.core.data.local.model.music.toModel
-import com.riders.thelab.core.data.remote.dto.artist.Artist
-import com.riders.thelab.core.data.utils.Resource
+import com.riders.thelab.core.common.utils.Resource
+import com.riders.thelab.core.domain.model.artist.Artist
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -21,15 +20,18 @@ object ArtistsManager {
     fun convertArtistsToModel(
         listOfArtistDto: List<Artist>,
         artistThumbnails: List<String>
-    ): List<ArtistModel> {
+    ): List<Artist> {
         Timber.d("convertArtistsToModel() | artists dto size : ${listOfArtistDto.size}, thumbnails size : ${artistThumbnails.size}, ")
 
         return listOfArtistDto
-            .mapIndexed { index: Int, artist: Artist -> artist.toModel(index.toByte()) }
+            .mapIndexed { index: Int, artist: Artist ->
+                artist.index = index.toByte()
+                artist
+            }
             .onEach { artist ->
-                Timber.d("convertArtistsToModel() | url : ${artist.urlThumbnail}")
-                artist.urlThumbnail = artistThumbnails.firstOrNull {
-                    it.contains(artist.urlThumbnail.toString())
+                Timber.d("convertArtistsToModel() | url : ${artist.urlThumb}")
+                artist.urlThumb = artistThumbnails.firstOrNull {
+                    it.contains(artist.urlThumb.toString())
                 } ?: ""
             }
     }
@@ -124,16 +126,6 @@ object ArtistsManager {
                     .getTaskFlow<Uri>()
                     .collect { resourceResult ->
                         when (resourceResult) {
-                            is Resource.Error -> {
-                                Timber.e("buildArtistsThumbnailsListWithFlow | addOnFailureListener | message: ${resourceResult.message} (class: ${resourceResult.throwable?.javaClass?.canonicalName})")
-                                return@collect
-                            }
-
-                            is Resource.ErrorWithType -> {
-                                Timber.e("buildArtistsThumbnailsListWithFlow | addOnFailureListener | message: ${resourceResult.error} (class: ${resourceResult.error::class.java.canonicalName})")
-                                return@collect
-                            }
-
                             is Resource.Success -> {
                                 Timber.i("buildArtistsThumbnailsListWithFlow() | addOnSuccessListener | uri: ${resourceResult.data.toString()}")
                                 thumbnailsLinks.add(resourceResult.data.toString())
@@ -144,6 +136,15 @@ object ArtistsManager {
                                             .run { this.toList() }
                                     )
                                 }
+                            }
+
+                            else -> {
+                                val errorMessage: String? =
+                                    (resourceResult as? Resource.Error)?.message
+                                val errorClazz: String? =
+                                    (resourceResult as? Resource.Error)?.throwable?.javaClass?.canonicalName
+                                Timber.e("buildArtistsThumbnailsListWithFlow | addOnFailureListener | message: ${errorMessage} (class: ${errorClazz})")
+                                return@collect
                             }
                         }
                     }

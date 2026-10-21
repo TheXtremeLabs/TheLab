@@ -245,6 +245,6 @@ class LabNetworkManager @Inject constructor(
         private var mInstance: LabNetworkManager? = null
 
         fun getInstance(context: Context): LabNetworkManager =
-            mInstance ?: synchronized(this) { mInstance ?: LabNetworkManager(context) }
+            mInstance ?: synchronized(this) { mInstance ?: LabNetworkManager(context.applicationContext) }
     }
 }

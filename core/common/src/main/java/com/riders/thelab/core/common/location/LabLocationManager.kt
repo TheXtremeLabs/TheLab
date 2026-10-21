@@ -167,7 +167,6 @@ class LabLocationManager private constructor(
             // if Network Enabled get lat/long using Network
             if (!isNetworkEnabled) {
                 Timber.e("getCurrentLocation() | !isNetworkEnabled")
-                null
             } else {
                 getLocationViaNetwork()
                 updateLocationState(this.mLocation)
@@ -404,11 +403,11 @@ class LabLocationManager private constructor(
 
         @Synchronized
         fun getInstance(context: Context): LabLocationManager = mInstance ?: synchronized(this) {
-            mInstance ?: LabLocationManager(context = context).also { mInstance = it }
+            mInstance ?: LabLocationManager(context = context.applicationContext).also { mInstance = it }
         }
 
         fun getInstance(activity: Activity): LabLocationManager = mInstance ?: synchronized(this) {
-            mInstance ?: LabLocationManager(context = activity).also { mInstance = it }
+            mInstance ?: LabLocationManager(context = activity.applicationContext).also { mInstance = it }
         }
 
         fun getInstance(activity: ComponentActivity): LabLocationManager =

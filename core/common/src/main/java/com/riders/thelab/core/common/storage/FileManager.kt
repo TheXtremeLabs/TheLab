@@ -13,8 +13,10 @@ import java.io.OutputStream
 
 class FileManager private constructor(private val context: Context) {
 
+    @SuppressLint("NewApi")
     private val dataPath =
         if (!LabCompatibilityManager.isAndroid10()) "${Environment.getExternalStorageDirectory()}/SAM_SHARE/DISTRI" else Environment.getDataDirectory().absolutePath
+    @SuppressLint("NewApi")
     private val mDistriDataFolder =
         if (!LabCompatibilityManager.isAndroid10()) "$dataPath/" else "$dataPath/data/${context.packageName}/files/"
 
@@ -45,6 +47,7 @@ class FileManager private constructor(private val context: Context) {
         return file
     }
 
+    @SuppressLint("NewApi")
     private fun getDataDirectoryPath(): String =
         if (!LabCompatibilityManager.isAndroid10()) "${Environment.getExternalStorageDirectory()}/SAM_SHARE/${context.packageName}" else "${Environment.getDataDirectory().absolutePath}/data/${context.packageName}/files"
 
@@ -231,11 +234,8 @@ class FileManager private constructor(private val context: Context) {
         @SuppressLint("StaticFieldLeak")
         private var mInstance: FileManager? = null
 
-        fun getInstance(context: Context): FileManager {
-            if (null == mInstance) {
-                mInstance = FileManager(context)
-            }
-            return mInstance as FileManager
+        fun getInstance(context: Context): FileManager = mInstance ?: synchronized(this) {
+            mInstance ?: FileManager(context.applicationContext).also { mInstance = it }
         }
     }
 }

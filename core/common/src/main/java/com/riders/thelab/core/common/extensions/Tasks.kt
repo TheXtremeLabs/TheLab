@@ -1,9 +1,7 @@
-package com.riders.thelab.feature.artists
+package com.riders.thelab.core.common.extensions
 
 import com.google.android.gms.tasks.Task
-import com.riders.thelab.core.data.utils.Resource
-import com.riders.thelab.core.data.utils.getClassDeclaredConstructorInstance
-import com.riders.thelab.core.data.utils.toErrorType
+import com.riders.thelab.core.common.utils.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -84,19 +82,23 @@ inline fun <reified T : Any> Task<T>.getTaskFlow(): Flow<Resource<T>> = callback
     this@getTaskFlow
         .addOnCanceledListener {
             Timber.d("task | addOnCanceledListener")
-            trySend(Resource.Error(message = "Task canceled".toNotBlankString().getOrThrow()))
+            trySend(
+                Resource.Error.ErrorAsNotBlankString(
+                    "Task canceled".toNotBlankString().getOrThrow()
+                )
+            )
         }
         .addOnFailureListener { throwable ->
             Timber.e("task | addOnFailureListener | message: ${throwable.message} (class: ${throwable::class.java.canonicalName})")
 
             throwable.message?.let {
                 trySend(
-                    Resource.Error(
-                        message = it.toNotBlankString().getOrThrow(),
-                        throwable = throwable
+                    Resource.Error.ErrorAsNotBlankString(
+                        it.toNotBlankString().getOrThrow(),
+                        throwable
                     )
                 )
-            } ?: trySend(Resource.ErrorWithType(throwable.toErrorType()))
+            } ?: trySend(Resource.Error.ErrorWithType(throwable.toErrorType()))
         }
         .addOnSuccessListener {
             Timber.d("task | addOnSuccessListener | value: $it")

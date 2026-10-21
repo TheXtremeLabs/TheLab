@@ -52,15 +52,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.palette.graphics.Palette
 import coil3.compose.AsyncImagePainter
-import com.riders.thelab.core.data.local.model.music.ArtistModel
 import com.riders.thelab.core.ui.compose.annotation.DevicePreviews
 import com.riders.thelab.core.ui.compose.data.AppTheme
 import com.riders.thelab.core.ui.compose.theme.TheLabTheme
 import com.riders.thelab.core.ui.compose.utils.getCoilAsyncImagePainter
 import com.riders.thelab.core.ui.compose.utils.loadImage
-import com.riders.thelab.core.ui.utils.encodeToBase64
+import com.riders.thelab.feature.artists.data.local.model.ArtistUi
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -69,7 +67,7 @@ fun ArtistItem(
     theme: AppTheme, darkTheme: Boolean,
     sharedTransitionScope: SharedTransitionScope,
     animatedVisibilityScope: AnimatedVisibilityScope,
-    artist: ArtistModel,
+    artist: ArtistUi,
     index: Int,
     uiEvent: (UiEvent) -> Unit
 ) {
@@ -83,7 +81,7 @@ fun ArtistItem(
 
     val painter: AsyncImagePainter = getCoilAsyncImagePainter(
         context = context,
-        dataUrl = /*artist.encodedThumbnail ?: */artist.urlThumbnail ?: "",
+        dataUrl = /*artist.encodedThumbnail ?: */artist.urlThumb ?: "",
         onState = { state ->
             isLoading = state is AsyncImagePainter.State.Loading
             isError = state is AsyncImagePainter.State.Error
@@ -192,7 +190,7 @@ fun ArtistItem(
                                     boundsTransform = boundsTransform
                                 )
                                 .skipToLookaheadSize(),
-                            text = artist.sceneName,
+                            text = artist.artistName,
                             color = if (LocalInspectionMode.current) {
                                 if (!isSystemInDarkTheme()) Color.Black else Color.White
                             } else {
@@ -209,7 +207,7 @@ fun ArtistItem(
 @OptIn(ExperimentalSharedTransitionApi::class)
 @DevicePreviews
 @Composable
-private fun PreviewArtistItem(@PreviewParameter(PreviewProviderArtist::class) artist: ArtistModel) {
+private fun PreviewArtistItem(@PreviewParameter(PreviewProviderArtist::class) artist: ArtistUi) {
     val navController = rememberNavController()
     TheLabTheme(theme = AppTheme.Default) {
         SharedTransitionLayout(modifier = Modifier.fillMaxSize()) {

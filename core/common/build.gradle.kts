@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.thelab.library)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.thelab.hilt)
     alias(libs.plugins.ksp)
 }
@@ -49,6 +48,9 @@ dependencies {
     // Worker
     implementation(libs.androidx.work.ktx)
 
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.storage)
+
     // OkHttp
     // define a BOM and its version
     implementation(platform(libs.okhttp.bom))
@@ -56,6 +58,11 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
 
+    implementation(platform(libs.retrofit.bom))
+    implementation(libs.retrofit.core)
+    
+    // Kotools Types
+    implementation(libs.kotools.types)
 
 
     ///////////////////////////////////

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.location.Location
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import com.riders.thelab.core.common.BuildConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.launch
@@ -112,7 +113,6 @@ fun InputStream.asStringData(charset: Charset = Charsets.UTF_8): String =
     }.also { Timber.d("InputStream.asStringData() | content length : ${it.length}") }
 
 
-
 /////////////////////////////////////////////////////
 // Image
 /////////////////////////////////////////////////////
@@ -120,6 +120,27 @@ fun Int.toBitmap(context: Context): Bitmap? {
     require(0 != this) { "Drawable must be greater than 0" }
     return ContextCompat.getDrawable(context, this)?.toBitmap()
 }
+
+/////////////////////////////////////////////////////
+// Run Catching
+/////////////////////////////////////////////////////
+suspend fun <R> runCatching(block: suspend () -> R, exceptionBlock: ((Throwable) -> Unit)? = null) =
+    runCatching {
+        block.invoke()
+    }
+        .onFailure { throwable ->
+            when (throwable) {
+                is RuntimeException -> throw throwable
+                else -> {
+                    throwable.printStackTrace()
+
+                    if (BuildConfig.DEBUG)
+                        Timber.e("runCatching() | onFailure | error caught with message: ${throwable.message} (class: ${throwable.javaClass.canonicalName})")
+
+                    exceptionBlock?.invoke(throwable)
+                }
+            }
+        }
 
 /////////////////////////////////////////////////////
 // Worker
