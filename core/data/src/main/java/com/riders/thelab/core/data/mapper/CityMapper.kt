@@ -35,6 +35,7 @@ fun City.toDTO(): com.riders.thelab.core.data.remote.dto.weather.City =
 // --- Domain
 ////////////////////////////////////////////////
 fun CityModel.toDomainModel(): City = City(
+    id = this@toDomainModel.id.toDouble(),
     name = this.name,
     state = this.state,
     country = this.country,
@@ -43,6 +44,4 @@ fun CityModel.toDomainModel(): City = City(
         latitude = this.latitude
     ),
     uuid = this.uuid
-).apply {
-    this.id = this@toDomainModel.id.toDouble()
-}
+)
