@@ -89,7 +89,7 @@ class TheLabVisionActivity : BaseComponentActivity() {
                                             BoxWithConstraints(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                                                 MLKitVisionScreen(
                                                     theme = theme,
-                                                    isDarkTheme = isDarkTheme,
+                                                    isDarkTheme = isDarkTheme?: isSystemInDarkTheme(),
                                                     // Select back camera as a default
                                                     cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA,
                                                     imageAnalyzer = BarcodeScannerAnalyzer(

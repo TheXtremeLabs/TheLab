@@ -49,9 +49,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Enabling multidex support.
-        multiDexEnabled = true
-
         vectorDrawables.useSupportLibrary = true
 
         ndk {
@@ -61,7 +58,7 @@ android {
     }
 
     buildTypes {
-        val debug by getting {
+        debug {
             isDebuggable = true
 
             // Enables CODE shrinking, obfuscation, and optimization for only
@@ -120,7 +117,7 @@ android {
     /*
     * https://stackoverflow.com/questions/50792428/how-to-access-variant-outputfilename-in-kotlin
     */
-    applicationVariants.all {
+    /*applicationVariants.all {
         val variant = this
         variant.outputs
             .map { it as com.android.build.gradle.internal.api.BaseVariantOutputImpl }
@@ -130,7 +127,7 @@ android {
                 log("Application Variants | output", "filename: $printFileName")
                 output.outputFileName = fileName
             }
-    }
+    }*/
 }
 
 configurations.all {
@@ -141,7 +138,7 @@ configurations.all {
         // In configurations.all -> resolutionStrategy
         force("${libs.protobuf.javalite.get()}:${libs.versions.protobuf.get()}")
         force("${libs.protobuf.kotlin.lite.get()}:${libs.versions.protobuf.get()}")
- }
+    }
 
     exclude(module = "protobuf-lite")
     exclude(module = "protolite-well-known-types")

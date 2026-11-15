@@ -8,6 +8,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class VisionViewModel @Inject constructor(
-    val uiRepository: UiRepository
-) : BaseViewModel(), DefaultLifecycleObserver {
+    uiRepository: UiRepository
+) : BaseViewModel(uiRepository), DefaultLifecycleObserver {
 }
