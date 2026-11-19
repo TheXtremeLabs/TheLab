@@ -47,6 +47,20 @@ internal fun Project.configureKotlinCommons(commonExtension: CommonExtension) {
             buildConfig = true
             viewBinding = true
         }
+        packaging.resources.excludes += setOf(
+            "META-INF/DEPENDENCIES",
+            "META-INF/INDEX.LIST",
+            "META-INF/LICENSE",
+            "META-INF/LICENSE.txt",
+            "META-INF/LICENSE.md",
+            "META-INF/LICENSE-notice.md",
+            "META-INF/NOTICE",
+            "META-INF/NOTICE.txt",
+            "META-INF/NOTICE.md",
+            "META-INF/licenses/*",
+            "META-INF/AL2.0",
+            "META-INF/LGPL2.1"
+        )
     }
 
     dependencies {
